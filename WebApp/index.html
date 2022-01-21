@@ -1,33 +1,64 @@
 <form>
     <button>Connect with BLE device</button>
   </form>
-  
+  <p>Device Name:</p> <p id="name"></p>
+  <p>BPM:</p> <p id="data"></p>
   <script>
-    var deviceName = 'Empatica E4'
+    var deviceName = 'Ardunio'
   
     function isWebBluetoothEnabled() {
       if (!navigator.bluetooth) {
         console.log('Web Bluetooth API is not available in this browser!')
         return false
       }
-  
+
       return true
     }
   
     function getDeviceInfo() {
       let options = {
-        acceptAllDevices: true // Option to accept all devices
+        acceptAllDevices: true, // Option to accept all devices
+        optionalServices: ['heart_rate']
         /*
         "filters": [
           { "name": deviceName }
         ]
         */
+        
       }
   
       console.log('Requesting Bluetooth Device...')
       navigator.bluetooth.requestDevice(options).then(device => {
+
         console.log('> Name: ' + device.name)
-      }).catch(error => {
+        document.getElementById("name").innerHTML = device.name; //display device name
+
+        console.log('Connecting to GATT Server...');
+        return device.gatt.connect(); //connect to gatt server
+      })
+      .then(server => {
+
+        console.log('Getting Heart Rate Service...');
+        return server.getPrimaryService('heart_rate');
+
+      })
+      .then(service => {
+
+        console.log('Getting Heart Rate Control Point Characteristic...');
+        return service.getCharacteristic('heart_rate_measurement');
+
+      })
+      .then(characteristic => {
+        return characteristic.readValue();
+      })
+      .then(value => {
+        let decoder = new TextDecoder('utf-8');
+
+        document.getElementById("data").innerHTML = value.getUint8(0);
+        console.log('> Heart Rate Measurement: ' + value.getUint8(0));
+  
+      })
+      .catch(error => {
         console.log('Argh! ' + error)
       })
     }
@@ -40,4 +71,6 @@
         getDeviceInfo()
       }
     })
+
+    
   </script>
