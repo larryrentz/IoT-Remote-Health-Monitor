@@ -60,21 +60,4 @@ function Patient() {
 
   );
 }
-
-function Device() {
-  <Card sx={{ width: 250 }} color="blue">
-    <CardContent>
-      <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
-        Device Information
-      </Typography>
-      <Typography sx={{ mb: 1.5 }} color="black">
-        Name: FitBit2.0
-      </Typography>
-      <Typography variant="body2" color="black">
-        Device Data:
-      </Typography>
-    </CardContent>
-  </Card>
-}
-
 export default Patient;
