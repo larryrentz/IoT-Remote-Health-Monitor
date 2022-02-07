@@ -15,7 +15,7 @@
       return true
     }
   
-    function getDeviceInfo() {
+    async function getDeviceInfo() {
       let options = {
         acceptAllDevices: true, // Option to accept all devices
         optionalServices: ['heart_rate']
@@ -26,41 +26,34 @@
         */
         
       }
-  
-      console.log('Requesting Bluetooth Device...')
-      navigator.bluetooth.requestDevice(options).then(device => {
 
-        console.log('> Name: ' + device.name)
+      try {
+        console.log('Requesting Bluetooth Device...')
+        const device = await navigator.bluetooth.requestDevice(options);
+
+        console.log('> Name: ' + device.name);
         document.getElementById("name").innerHTML = device.name; //display device name
 
         console.log('Connecting to GATT Server...');
-        return device.gatt.connect(); //connect to gatt server
-      })
-      .then(server => {
+        const server = await device.gatt.connect(); //connect to gatt server
 
         console.log('Getting Heart Rate Service...');
-        return server.getPrimaryService('heart_rate');
-
-      })
-      .then(service => {
+        const service = await server.getPrimaryService('heart_rate');
 
         console.log('Getting Heart Rate Control Point Characteristic...');
-        return service.getCharacteristic('heart_rate_measurement');
+        const characteristic = await service.getCharacteristic('heart_rate_measurement');
 
-      })
-      .then(characteristic => {
-        return characteristic.readValue();
-      })
-      .then(value => {
+        console.log('Reading Heart Rate Control Point Value...');
+        const value = await characteristic.readValue();
+
+        
         let decoder = new TextDecoder('utf-8');
-
         document.getElementById("data").innerHTML = value.getUint8(0);
         console.log('> Heart Rate Measurement: ' + value.getUint8(0));
-  
-      })
-      .catch(error => {
-        console.log('Argh! ' + error)
-      })
+      }
+      catch(error) {
+        console.log('Argh! ' + error);
+      }
     }
   
     document.querySelector('form').addEventListener('submit', function(event) {
