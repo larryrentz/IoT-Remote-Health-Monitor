@@ -28,11 +28,11 @@
     }
 
     try {
-      function handleChangedValue(event) {
+      const  handleChangedValue = (event) => {
           let value = event.target.value.getUint8(0)
           let now = new Date()
           console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "Heart rate is now " + value)
-      }
+      };
 
       console.log('Requesting Bluetooth Device...')
       const device = await navigator.bluetooth.requestDevice(options);
