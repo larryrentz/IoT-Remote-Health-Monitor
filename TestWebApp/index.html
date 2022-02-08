@@ -1,69 +1,140 @@
 <form>
-    <button>Connect with BLE device</button>
-  </form>
-  <p>Device Name:</p> <p id="name"></p>
-  <p>BPM:</p> <p id="data"></p>
-  <script>
-    var deviceName = 'Ardunio'
-  
-    function isWebBluetoothEnabled() {
-      if (!navigator.bluetooth) {
-        console.log('Web Bluetooth API is not available in this browser!')
-        return false
-      }
+  <button>Connect with BLE device</button>
+</form>
+<p>Device Name:</p> <p id="name"></p>
+<p>BPM:</p> <p id="data"></p>
+<script>
+  var deviceName = 'Ardunio'
 
-      return true
+  function isWebBluetoothEnabled() {
+    if (!navigator.bluetooth) {
+      console.log('Web Bluetooth API is not available in this browser!')
+      return false
     }
-  
-    async function getDeviceInfo() {
-      let options = {
-        acceptAllDevices: true, // Option to accept all devices
-        optionalServices: ['heart_rate']
-        /*
-        "filters": [
-          { "name": deviceName }
-        ]
-        */
-        
-      }
 
-      try {
-        console.log('Requesting Bluetooth Device...')
-        const device = await navigator.bluetooth.requestDevice(options);
+    return true
+  }
 
-        console.log('> Name: ' + device.name);
-        document.getElementById("name").innerHTML = device.name; //display device name
-
-        console.log('Connecting to GATT Server...');
-        const server = await device.gatt.connect(); //connect to gatt server
-
-        console.log('Getting Heart Rate Service...');
-        const service = await server.getPrimaryService('heart_rate');
-
-        console.log('Getting Heart Rate Control Point Characteristic...');
-        const characteristic = await service.getCharacteristic('heart_rate_measurement');
-
-        console.log('Reading Heart Rate Control Point Value...');
-        const value = await characteristic.readValue();
-
-        
-        let decoder = new TextDecoder('utf-8');
-        document.getElementById("data").innerHTML = value.getUint8(0);
-        console.log('> Heart Rate Measurement: ' + value.getUint8(0));
-      }
-      catch(error) {
-        console.log('Argh! ' + error);
-      }
+  async function getDeviceInfo() {
+    let options = {
+      acceptAllDevices: true, // Option to accept all devices
+      optionalServices: ['heart_rate']
+      /*
+      "filters": [
+        { "name": deviceName }
+      ]
+      */
+      
     }
-  
-    document.querySelector('form').addEventListener('submit', function(event) {
-      event.stopPropagation()
-      event.preventDefault()
-  
-      if (isWebBluetoothEnabled()) {
-        getDeviceInfo()
-      }
-    })
 
-    
-  </script>
+    try {
+      const  handleChangedValue = (event) => {
+          let value = event.target.value.getUint8(0)
+          let now = new Date()
+          console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "Heart rate is now " + value)
+      };
+
+      console.log('Requesting Bluetooth Device...')
+      const device = await navigator.bluetooth.requestDevice(options);
+
+      console.log('> Name: ' + device.name);
+      document.getElementById("name").innerHTML = device.name; //display device name
+
+      console.log('Connecting to GATT Server...');
+      const server = await device.gatt.connect(); //connect to gatt server
+
+      console.log('Getting Heart Rate Service...');
+      const service = await server.getPrimaryService('heart_rate');
+
+      console.log('Getting Heart Rate Control Point Characteristic...');
+      const characteristic = await service.getCharacteristic('heart_rate_measurement');
+      characteristic.addEventListener("characteristicvaluechanged", handleChangedValue);
+
+      console.log('Reading Heart Rate Control Point Value...');
+      const value = await characteristic.readValue();
+      
+      let decoder = new TextDecoder('utf-8');
+      document.getElementById("data").innerHTML = value.getUint8(0);
+      console.log('> Heart Rate Measurement: ' + value.getUint8(0));
+
+
+      // function read() {
+      //     // if the device is detected we resolve the promise otherwise we get the info again
+      //     return (bluetoothDeviceDetected ? Promise.resolve() : getDeviceInfo())
+      //     .then(connectGATT)
+      //     .then(() => {
+      //         console.log("Reading UV Index...")
+      //         return gattCharacteristic.readValue()
+      //     })
+      //     .catch((error) => {
+      //         console.log("Wating to start reading: " + error)
+      //     })
+      // }
+      // function start() {
+      //     gattCharacteristic.startNotifications()
+      //     .then(()=> {
+      //         console.log("Start Reading...")
+      //         btnStart.disabled = true;
+      //         btnStop.disabled = false;
+      //     })
+      //     .catch((error)=>{
+      //         console.log("Error [start]: " + error)
+      //     })
+      // }
+      // function stop() {
+      //     gattCharacteristic.stopNotifications()
+      //     .then(()=> {
+      //         console.log("Stop Reading...")
+      //         btnStart.disabled = false;
+      //         btnStop.disabled = true;
+      //     })
+      //     .catch((error)=>{
+      //         console.log("Error [stop]: " + error)
+      //     })
+      // }
+      // function connectGATT() {
+      //     if(bluetoothDeviceDetected.gatt.connected && gattCharacteristic) {
+      //         return Promise.resolve();
+      //     }
+
+      //     return bluetoothDeviceDetected.gatt.connected()
+      //     .then(server => {
+      //         console.log("Getting GATT Service...")
+      //         return server.getPrimaryService(bleService)
+      //     })
+      //     .then(service => {
+      //         console.log("Getting GATT Characteristic...")
+      //         return service.getCharacteristic(bleCharacteristic)
+      //     })
+      //     .then(characteristic => {
+      //         gattCharacteristic = characteristicgattCharacteristic.addEventListener("characteristicvaluechanged", handleChangedValue)
+
+      //         document.getElementById("btn-start").disabled = false
+      //         document.getElementById("btn-stop").disabled = true
+
+      //         btnStart.disabled = false
+      //         btnStop.disabled = true
+      //     })
+      // }
+      // function handleChangedValue(event) {
+      //     let value = event.target.value.getUint8(0)
+      //     let now = new Date()
+      //     console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "UV Index is " + value)
+      // }
+    }
+    catch(error) {
+      console.log('Argh! ' + error);
+    }
+  }
+
+  document.querySelector('form').addEventListener('submit', function(event) {
+    event.stopPropagation()
+    event.preventDefault()
+
+    if (isWebBluetoothEnabled()) {
+      getDeviceInfo()
+    }
+  })
+
+  
+</script>
