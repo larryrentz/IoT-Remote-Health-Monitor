@@ -5,7 +5,9 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { Container } from '@mui/material';
 import { Grid } from '@mui/material';
+import './Patient.css';
 
 
 function Patient() {
@@ -88,9 +90,10 @@ function Patient() {
 
   return (
     //patient information
-    <div>
+    <Container class="container">
+      <h1>IoT Remote Health Monitor</h1>
       <CardActions disableSpacing>
-        <Card sx={{ width: 250 }} color="blue">
+        <Card sx={{ width: 250 }} class="card1">
           <CardContent>
             <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
               Patient Information
@@ -107,7 +110,7 @@ function Patient() {
 
       {/*deive info*/}
       <CardActions disableSpacing>
-        <Card sx={{ width: 250 }} color="blue">
+        <Card sx={{ width: 250 }} class="card2">
           <CardContent>
             <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
               Device Information
@@ -132,7 +135,7 @@ function Patient() {
 
       
       {supportsBluetooth && isDisconnected &&
-        <Button
+        <Button class="button"
         id="webBLEButton"
         variant="contained"
         size="medium"
@@ -145,7 +148,7 @@ function Patient() {
         <p>This browser doesn't support the Web Bluetooth API</p>
       }
 
-    </div>
+    </Container>
 
   );
 }
