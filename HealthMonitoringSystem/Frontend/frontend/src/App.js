@@ -1,10 +1,14 @@
+import { MenuItem } from '@mui/material';
 import './App.css';
-import Patient from './components/Patient.js'
+import Navigation from './components/Navigation';
+import Patient from './components/Patient.js';
+import MenuItems from './components/MenuItems.js';
 
 function App() {
   return (
     <div>
-      <Patient/>  
+      <Patient/>
+      <Navigation/>
     </div>
   );
 }
