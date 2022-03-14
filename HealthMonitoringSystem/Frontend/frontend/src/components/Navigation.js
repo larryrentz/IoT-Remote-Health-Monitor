@@ -19,8 +19,8 @@ import {
 import clsx from "clsx";
 
 // internal
-import MenuItem from "./MenuItems";
-//import routes from "../routes";
+import MenuItem from "./MenuItem";
+import routes from "../routes";
 import { useStyles } from "../styles";
 
 
@@ -77,7 +77,7 @@ const Navigation = () => {
             {open ? <ChevronLeftIcon /> : <MenuIcon />}
           </IconButton>
         </div>
-        {/* <List className={classes.navigationList}>
+        <List className={classes.navigationList}>
           {routes.map((route, index) => {
             return (
               <React.Fragment key={index}>
@@ -94,7 +94,7 @@ const Navigation = () => {
               </React.Fragment>
             );
           })}
-        </List> */}
+        </List>
       </Drawer>
     </div>
   );

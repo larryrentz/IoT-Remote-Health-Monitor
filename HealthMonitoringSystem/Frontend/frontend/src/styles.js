@@ -15,16 +15,6 @@ export const useStyles = makeStyles((theme) => ({
       ...theme.mixins.toolbar,
     },
   },
-  navigationLogo: {
-    width: "50%",
-    cursor: "pointer",
-  },
-  navigationLogoContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingBottom: theme.spacing(6),
-  },
   navigationDrawer: {
     width: 240,
     border: "none",
