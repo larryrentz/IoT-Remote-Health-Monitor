@@ -8,6 +8,9 @@ import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
 import { Grid } from '@mui/material';
 import './Patient.css';
+import { auth, firestore } from './Firebase';
+import firebase from 'firebase/compat/app';
+import { useCollectionData } from "react-firebase-hooks/firestore"
 
 
 function Patient() {
@@ -15,6 +18,9 @@ function Patient() {
   const [isDisconnected, setIsDisconnected] = useState(true);
   const [heartRate, setheartRate] = useState(null);
   const [deviceName, setdeviceName] = useState(null);
+  //Reference to database
+  const hrRef = firestore.collection(`users/${auth.currentUser.uid}/heartRate`);
+  const [heartRates] = useCollectionData(hrRef, {idField: "id"});
 
   // When the component mounts, check that the browser supports Bluetooth
   useEffect(() => {
@@ -40,6 +46,11 @@ function Patient() {
       setheartRate(value);
       let now = new Date()
       console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "Heart rate is now " + value)
+      //Push heart rate to the cloud
+      hrRef.add({
+        heartRate: heartRate,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      })
     }
   
     /**
