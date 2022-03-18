@@ -15,7 +15,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore"
 
 
 function Patient() {
-  const [time, setTime] = useState(null);
+  const [time, setTime] = useState(new Date());
   const [supportsBluetooth, setSupportsBluetooth] = useState(false);
   const [isDisconnected, setIsDisconnected] = useState(true);
   const [heartRate, setheartRate] = useState(null);
@@ -24,31 +24,36 @@ function Patient() {
   const hrRef = firestore.collection(`users/${auth.currentUser.uid}/heartRate`);
   const [heartRates] = useCollectionData(hrRef, {idField: "id"});
 
-  //Push heart rate to the cloud every 2 seconds
-  useEffect(() => {
-    setTimeout(() => {
-      console.log(`${time} - ${heartRate} BPM`);
-      hrRef.add({
-        heartRate: heartRate,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      })
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch((e) => {
-        console.error(`Error adding document: ${e}`);
-      });
-      setTime(new Date().toLocaleTimeString());
-    }, 2000);
-
-  }, [time]);
-
   // When the component mounts, check that the browser supports Bluetooth
   useEffect(() => {
     if (navigator.bluetooth) {
       setSupportsBluetooth(true);
     }
   }, []);
+  
+  // Push heart rate to the cloud every 2 seconds
+  useEffect(() => {
+    setTimeout(() => {
+      // uncomment to log the heart rate and time in the console
+      // console.log(`${time.toLocaleTimeString()} - ${heartRate} BPM`);
+
+      // push the heart rate if it exists
+      if(heartRate) {
+        hrRef.add({
+          heartRate: heartRate,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then((docRef) => {
+          // can do something with the newly created document here
+        })
+        .catch((e) => {
+          console.error(`Error adding document: ${e}`);
+        });
+      }
+      // trigger the effect again by changing the time dependency
+      setTime(new Date());
+    }, 2000);
+  }, [time]);
 
   /**
    * Let the user know when their device has been disconnected.
