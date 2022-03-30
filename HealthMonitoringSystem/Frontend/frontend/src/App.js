@@ -24,19 +24,23 @@ function App() {
           gridTemplateAreas: `"header header header header" "main main main sidebar" "footer footer footer sidebar"`
         }}
       >
-        <Box sx={{ gridArea: 'header'}}>
-          <Typography> IoT Remote Health Monitor </Typography>
+        <Box sx={{ gridArea: 'header', bgcolor: 'lightgreen'}}>
+          <Typography sx={{ textAlign: 'center'}}> IoT Remote Health Monitor </Typography>
         </Box>
+
         <Box sx={{ gridArea: 'main' }}>
           <Patient /> 
         </Box>
-        <Box sx={{ gridArea: 'sidebar'}}>
+        <Box sx={{ gridArea: 'sidebar', bgcolor: 'lightblue'}}>
           <Typography> Notifications </Typography>
           <Typography> Sidebar </Typography>
-          <FAQs/> 
         </Box>
-        <Box sx={{ gridArea: 'footer'}}>
-          <Typography> Made with Love :) </Typography>
+        
+        <Box sx={{ gridArea: 'footer', bgcolor: 'lightgray'}}>
+          <Typography sx={{ textAlign: 'center'}}> Made with Love :) </Typography>
+        </Box>
+        <Box sx={{ gridArea: 'sidebar', justifySelf: 'end', alignSelf: 'end'}}>
+          <FAQs/> 
         </Box>
       </Box>
     </Box>

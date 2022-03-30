@@ -4,10 +4,10 @@ import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 
 const style = {
     position: 'absolute',
-    top: '50%',
+    top: '40%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '50%',
+    width: '60%',
     bgcolor: 'background.paper',
     boxShadow: 24,
     borderRadius: 2,
