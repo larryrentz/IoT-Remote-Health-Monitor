@@ -25,17 +25,17 @@ function App() {
         }}
       >
         <Box sx={{ gridArea: 'header', bgcolor: 'lightgreen'}}>
-          <Typography sx={{ textAlign: 'center'}}> IoT Remote Health Monitor </Typography>
+          <Typography variant="h4" sx={{ textAlign: 'center'}}> IoT Remote Health Monitor </Typography>
         </Box>
 
-        <Box sx={{ gridArea: 'main' }}>
+        <Box sx={{ gridArea: 'main', bgcolor: 'lightyellow' }}>
           <Patient /> 
         </Box>
         <Box sx={{ gridArea: 'sidebar', bgcolor: 'lightblue'}}>
           <Typography> Notifications </Typography>
           <Typography> Sidebar </Typography>
         </Box>
-        
+
         <Box sx={{ gridArea: 'footer', bgcolor: 'lightgray'}}>
           <Typography sx={{ textAlign: 'center'}}> Made with Love :) </Typography>
         </Box>
