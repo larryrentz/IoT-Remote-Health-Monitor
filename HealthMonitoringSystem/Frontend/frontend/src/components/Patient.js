@@ -12,6 +12,7 @@ import { auth, firestore } from './Firebase';
 import firebase from 'firebase/compat/app';
 // import firebase from './Firebase';
 import { useCollectionData } from "react-firebase-hooks/firestore"
+import LineChart from './LineChart';
 
 
 function Patient() {
@@ -179,6 +180,8 @@ function Patient() {
       {!supportsBluetooth &&
         <p>This browser doesn't support the Web Bluetooth API</p>
       }
+
+      <LineChart />
 
     </Container>
 
