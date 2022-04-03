@@ -2,6 +2,7 @@ import './App.css';
 import { Box, Typography } from '@mui/material';
 import Patient from './components/Patient.js'
 import FAQs from './components/FAQs.js'
+import Alerts from './components/Alerts'
 
 function App() {
   return (
@@ -34,6 +35,9 @@ function App() {
         <Box sx={{ gridArea: 'sidebar', bgcolor: 'lightblue'}}>
           <Typography> Notifications </Typography>
           <Typography> Sidebar </Typography>
+          <Box sx={{gridArea: 'sidebar', justifySelf:'right', allignSelf:'end'}}>
+            <Alerts/>
+          </Box>
         </Box>
 
         <Box sx={{ gridArea: 'footer', bgcolor: 'lightgray'}}>
@@ -42,6 +46,7 @@ function App() {
         <Box sx={{ gridArea: 'sidebar', justifySelf: 'end', alignSelf: 'end'}}>
           <FAQs/> 
         </Box>
+
       </Box>
     </Box>
   );
