@@ -5,11 +5,14 @@ import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 
 const Alerts = () => {
-    const [open, setOpen] = React.useState(true);
+    const [openError, setErrorOpen] = React.useState(true);
+    const [openWarn, setWarnOpen] = React.useState(true);
+    const [openSucess, setSucessOpen] = React.useState(true);
 
+    
     return (
         <Stack spacing={2}>
-            <Collapse in={open}>
+            <Collapse in={openError}>
                 <Alert severity="error"
                     action={
                         <IconButton
@@ -17,7 +20,7 @@ const Alerts = () => {
                             color="inherit"
                             size="small"
                             onClick={()=>{
-                               setOpen(false);
+                                setErrorOpen(false);
                             }}
                         >
                             <CloseIcon fontSize="inherit"/>
@@ -29,14 +32,47 @@ const Alerts = () => {
                 </Alert>
             </Collapse>
 
-            <Alert severity="warning">
-                <AlertTitle>Warning</AlertTitle>
-                Low heart rate detected
-            </Alert>
-            <Alert severity="success">
-                <AlertTitle>Success</AlertTitle>
-                Device <strong>"insert device here"</strong> is connected
-            </Alert>
+            <Collapse in={openWarn}>
+                <Alert severity="warning"
+                    action={
+                        <IconButton
+                            aria-label ="close"
+                            color="inherit"
+                            size="small"
+                            onClick={()=>{
+                                setWarnOpen(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit"/>
+                        </IconButton>
+                    }
+                >
+                    <AlertTitle>Warning</AlertTitle>
+                    Low heart rate detected
+                </Alert>
+            </Collapse>
+
+
+            <Collapse in={openSucess}>
+                <Alert severity="success"
+                    action={
+                        <IconButton
+                            aria-label ="close"
+                            color="inherit"
+                            size="small"
+                            onClick={()=>{
+                                setSucessOpen(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit"/>
+                        </IconButton>
+                    }
+                >
+                    <AlertTitle>Success</AlertTitle>
+                    Device <strong>"insert device here"</strong> is connected
+                </Alert>
+            </Collapse>
+
         </Stack>
     )
 }
