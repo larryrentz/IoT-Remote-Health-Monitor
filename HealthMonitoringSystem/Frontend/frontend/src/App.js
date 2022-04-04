@@ -1,11 +1,12 @@
 import './App.css';
 import { auth } from './components/Firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
-import Patient from './components/Patient.js';
-import FAQs from './components/FAQs.js';
-import Signin from './components/SignIn';
-import ProfilePicture from './components/ProfilePicture';
 import { Box, Typography } from '@mui/material';
+import Signin from './components/SignIn';
+import Patient from './components/Patient.js'
+import FAQs from './components/FAQs.js'
+import Alerts from './components/Alerts'
+import ProfilePicture from './components/ProfilePicture';
 
 function App() {
   //Get current user
@@ -42,6 +43,9 @@ function App() {
       </Box>
       <Typography> Notifications </Typography>
       <Typography> Sidebar </Typography>
+      <Box sx={{gridArea: 'sidebar', justifySelf:'right', allignSelf:'end'}}>
+            <Alerts/>
+      </Box>
     </Box>
     <Box sx={{ gridArea: 'footer', bgcolor: 'lightgray'}}>
       <Typography sx={{ textAlign: 'center'}}>
