@@ -11,6 +11,10 @@ const Alerts = () => {
 
     
     return (
+        /*
+        alerts created for system; Added error and warning for heartrate as well as 
+        success for device connection.
+        */
         <Stack spacing={2}>
             <Collapse in={openError}>
                 <Alert severity="error"
