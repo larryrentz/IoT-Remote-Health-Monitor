@@ -2,6 +2,7 @@ import './App.css';
 import { Box, Typography } from '@mui/material';
 import Patient from './components/Patient.js'
 import FAQs from './components/FAQs.js'
+import Alerts from './components/Alerts'
 import ProfilePicture from './components/ProfilePicture';
 
 function App() {
@@ -37,6 +38,9 @@ function App() {
           </Box>
           <Typography> Notifications </Typography>
           <Typography> Sidebar </Typography>
+          <Box sx={{gridArea: 'sidebar', justifySelf:'right', allignSelf:'end'}}>
+            <Alerts/>
+          </Box>
         </Box>
         <Box sx={{ gridArea: 'footer', bgcolor: 'lightgray'}}>
           <Typography sx={{ textAlign: 'center'}}>
@@ -46,6 +50,7 @@ function App() {
         <Box sx={{ gridArea: 'sidebar', justifySelf: 'end', alignSelf: 'end'}}>
           <FAQs/> 
         </Box>
+
       </Box>
     </Box>
   );
