@@ -144,6 +144,18 @@ function Patient() {
         Device BLE
       </Button>
       }
+
+      {supportsBluetooth && isDisconnected &&
+        <Button class="button"
+        id="disButton"
+        variant="contained"
+        size="medium"
+        onClick={onDisconnected}
+        >
+        Disconnect Device
+      </Button>
+      }
+
       {!supportsBluetooth &&
         <p>This browser doesn't support the Web Bluetooth API</p>
       }

@@ -4,12 +4,15 @@ import Collapse from '@mui/material/Collapse';
 import { IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close'
 
-const Alerts = () => {
+function Alerts () {
     const [openError, setErrorOpen] = React.useState(true);
     const [openWarn, setWarnOpen] = React.useState(true);
     const [openSucess, setSucessOpen] = React.useState(true);
 
-    
+    const heartRate = () => {
+        
+    }
+
     return (
         /*
         alerts created for system; Added error and warning for heartrate as well as 
