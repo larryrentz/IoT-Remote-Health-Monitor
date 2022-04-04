@@ -1,16 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
-import { Grid } from '@mui/material';
 import './Patient.css';
+import DeviceModal from './DeviceModal';
+
 
 
 function Patient() {
+
   const [supportsBluetooth, setSupportsBluetooth] = useState(false);
   const [isDisconnected, setIsDisconnected] = useState(true);
   const [heartRate, setheartRate] = useState(null);
@@ -91,6 +92,9 @@ function Patient() {
   return (
     //patient information
     <Container class="container">
+      <div>
+        <DeviceModal/>
+      </div>
       <h1>IoT Remote Health Monitor</h1>
       <CardActions disableSpacing>
         <Card sx={{ width: 250 }} class="card1">
