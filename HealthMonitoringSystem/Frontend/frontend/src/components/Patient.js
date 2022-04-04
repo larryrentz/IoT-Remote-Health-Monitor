@@ -124,7 +124,7 @@ function Patient() {
   return (
     //patient information
     <Container class="container">
-      <h1>IoT Remote Health Monitor</h1>
+      <h1>Dashboard</h1>
       <CardActions disableSpacing>
         <Card sx={{ width: 250 }} class="card1">
           <CardContent>
