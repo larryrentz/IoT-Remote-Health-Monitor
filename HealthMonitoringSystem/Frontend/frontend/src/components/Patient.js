@@ -69,7 +69,7 @@ function Patient() {
    * received.
    */
     const handleCharacteristicValueChanged = (event) => {
-      let value = event.target.value.getUint8(0);
+      let value = event.target.value.getUint8(1);
       setheartRate(value);
       let now = new Date()
       console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "Heart rate is now " + value)
@@ -115,7 +115,7 @@ function Patient() {
         const reading = await characteristic.readValue();
   
         // Show the initial reading on the web page
-        setheartRate(reading.getUint8(0));
+        setheartRate(reading.getUint8(1));
       } catch(error) {
         console.log(`There was an error: ${error}`);
       }

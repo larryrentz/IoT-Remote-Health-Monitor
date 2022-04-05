@@ -42,7 +42,6 @@ function App() {
         <ProfilePicture />
       </Box>
       <Typography> Notifications </Typography>
-      <Typography> Sidebar </Typography>
       <Box sx={{gridArea: 'sidebar', justifySelf:'right', allignSelf:'end'}}>
             <Alerts/>
       </Box>
