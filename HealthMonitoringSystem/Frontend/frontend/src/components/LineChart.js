@@ -51,7 +51,7 @@ const LineChart = ({dbRef}) => {
             layout={ {width: 400, height: 400, title: 'Heart Rate',
                     yaxis: {
                         title: {
-                            text: 'Heart Rate',
+                            text: 'Heart Rate (bps)',
                             font: {
                                 family: 'Courier New, monospace',
                                 size: 18,
