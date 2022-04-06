@@ -6,16 +6,23 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
 import './Patient.css';
+import { auth, firestore } from './Firebase';
+import firebase from 'firebase/compat/app';
+// import firebase from './Firebase';
+import { useCollectionData } from "react-firebase-hooks/firestore"
+import LineChart from './LineChart';
 import DeviceModal from './DeviceModal.js';
 
 
-
 function Patient() {
-
+  const [time, setTime] = useState(new Date());
   const [supportsBluetooth, setSupportsBluetooth] = useState(false);
   const [isDisconnected, setIsDisconnected] = useState(true);
   const [heartRate, setheartRate] = useState(null);
   const [deviceName, setdeviceName] = useState(null);
+  //Reference to database
+  const hrRef = firestore.collection(`users/${auth.currentUser.uid}/heartRate`);
+  const [heartRates] = useCollectionData(hrRef, {idField: "id"});
 
   // When the component mounts, check that the browser supports Bluetooth
   useEffect(() => {
@@ -23,6 +30,30 @@ function Patient() {
       setSupportsBluetooth(true);
     }
   }, []);
+  
+  // Push heart rate to the cloud every 2 seconds
+  useEffect(() => {
+    setTimeout(() => {
+      // uncomment to log the heart rate and time in the console
+      // console.log(`${time.toLocaleTimeString()} - ${heartRate} BPM`);
+
+      // push the heart rate if it exists
+      if(heartRate) {
+        hrRef.add({
+          heartRate: heartRate,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        })
+        .then((docRef) => {
+          // can do something with the newly created document here
+        })
+        .catch((e) => {
+          console.error(`Error adding document: ${e}`);
+        });
+      }
+      // trigger the effect again by changing the time dependency
+      setTime(new Date());
+    }, 2000);
+  }, [time]);
 
   /**
    * Let the user know when their device has been disconnected.
@@ -37,7 +68,7 @@ function Patient() {
    * received.
    */
     const handleCharacteristicValueChanged = (event) => {
-      let value = event.target.value.getUint8(0);
+      let value = event.target.value.getUint8(1);
       setheartRate(value);
       let now = new Date()
       console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "Heart rate is now " + value)
@@ -83,7 +114,7 @@ function Patient() {
         const reading = await characteristic.readValue();
   
         // Show the initial reading on the web page
-        setheartRate(reading.getUint8(0));
+        setheartRate(reading.getUint8(1));
       } catch(error) {
         console.log(`There was an error: ${error}`);
       }
@@ -92,10 +123,10 @@ function Patient() {
   return (
     //patient information
     <Container class="container">
+      <h1>Dashboard</h1>
       <div>
         <DeviceModal/>
       </div>
-      <h1>IoT Remote Health Monitor</h1>
       <CardActions disableSpacing>
         <Card sx={{ width: 250 }} class="card1">
           <CardContent>
@@ -151,6 +182,8 @@ function Patient() {
       {!supportsBluetooth &&
         <p>This browser doesn't support the Web Bluetooth API</p>
       }
+
+      <LineChart />
 
     </Container>
 
