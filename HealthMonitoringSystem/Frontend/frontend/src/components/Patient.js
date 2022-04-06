@@ -13,6 +13,7 @@ import firebase from 'firebase/compat/app';
 // import firebase from './Firebase';
 import { useCollectionData } from "react-firebase-hooks/firestore"
 import LineChart from './LineChart';
+import DevicesView from './DevicesView';
 
 
 function Patient() {
@@ -26,100 +27,100 @@ function Patient() {
   const [heartRates] = useCollectionData(hrRef, {idField: "id"});
 
   // When the component mounts, check that the browser supports Bluetooth
-  useEffect(() => {
-    if (navigator.bluetooth) {
-      setSupportsBluetooth(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (navigator.bluetooth) {
+  //     setSupportsBluetooth(true);
+  //   }
+  // }, []);
   
   // Push heart rate to the cloud every 2 seconds
-  useEffect(() => {
-    setTimeout(() => {
-      // uncomment to log the heart rate and time in the console
-      // console.log(`${time.toLocaleTimeString()} - ${heartRate} BPM`);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     // uncomment to log the heart rate and time in the console
+  //     // console.log(`${time.toLocaleTimeString()} - ${heartRate} BPM`);
 
-      // push the heart rate if it exists
-      if(heartRate) {
-        hrRef.add({
-          heartRate: heartRate,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        })
-        .then((docRef) => {
-          // can do something with the newly created document here
-        })
-        .catch((e) => {
-          console.error(`Error adding document: ${e}`);
-        });
-      }
-      // trigger the effect again by changing the time dependency
-      setTime(new Date());
-    }, 2000);
-  }, [time]);
+  //     // push the heart rate if it exists
+  //     if(heartRate) {
+  //       hrRef.add({
+  //         heartRate: heartRate,
+  //         createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  //       })
+  //       .then((docRef) => {
+  //         // can do something with the newly created document here
+  //       })
+  //       .catch((e) => {
+  //         console.error(`Error adding document: ${e}`);
+  //       });
+  //     }
+  //     // trigger the effect again by changing the time dependency
+  //     setTime(new Date());
+  //   }, 2000);
+  // }, [time]);
 
   /**
    * Let the user know when their device has been disconnected.
    */
-   const onDisconnected = (event) => {
-    alert(`The device ${event.target} is disconnected`);
-    setIsDisconnected(true);
-  }
+  //  const onDisconnected = (event) => {
+  //   alert(`The device ${event.target} is disconnected`);
+  //   setIsDisconnected(true);
+  // }
 
    /**
    * Update the value shown on the web page when a notification is
    * received.
    */
-    const handleCharacteristicValueChanged = (event) => {
-      let value = event.target.value.getUint8(1);
-      setheartRate(value);
-      let now = new Date()
-      console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "Heart rate is now " + value)
-    }
+    // const handleCharacteristicValueChanged = (event) => {
+    //   let value = event.target.value.getUint8(1);
+    //   setheartRate(value);
+    //   let now = new Date()
+    //   console.log("> " + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds() + "Heart rate is now " + value)
+    // }
   
     /**
      * Attempts to connect to a Bluetooth device and subscribe to
      * battery level readings using the battery service.
      */
-    const connectToDeviceAndSubscribeToUpdates = async () => {
-      try {
-        // Search for Bluetooth devices that advertise a battery service
-        const device = await navigator.bluetooth
-          .requestDevice({
-            filters: [{services: ['heart_rate']}]
-          });
+    // const connectToDeviceAndSubscribeToUpdates = async () => {
+    //   try {
+    //     // Search for Bluetooth devices that advertise a battery service
+    //     const device = await navigator.bluetooth
+    //       .requestDevice({
+    //         filters: [{services: ['heart_rate']}]
+    //       });
   
-        setIsDisconnected(false);
+    //     setIsDisconnected(false);
   
-        // Add an event listener to detect when a device disconnects
-        device.addEventListener('gattserverdisconnected', onDisconnected);
+    //     // Add an event listener to detect when a device disconnects
+    //     device.addEventListener('gattserverdisconnected', onDisconnected);
 
-        // Set the device name
-        setdeviceName(device.name);
+    //     // Set the device name
+    //     setdeviceName(device.name);
   
-        // Try to connect to the remote GATT Server running on the Bluetooth device
-        const server = await device.gatt.connect();
+    //     // Try to connect to the remote GATT Server running on the Bluetooth device
+    //     const server = await device.gatt.connect();
   
-        // Get the heart rate from the Bluetooth device
-        const service = await server.getPrimaryService('heart_rate');
+    //     // Get the heart rate from the Bluetooth device
+    //     const service = await server.getPrimaryService('heart_rate');
   
-        // Get the heart rate measurement characteristic from the Bluetooth device
-        const characteristic = await service.getCharacteristic('heart_rate_measurement');
+    //     // Get the heart rate measurement characteristic from the Bluetooth device
+    //     const characteristic = await service.getCharacteristic('heart_rate_measurement');
   
-        // Subscribe to heart rate notifications
-        characteristic.startNotifications();
+    //     // Subscribe to heart rate notifications
+    //     characteristic.startNotifications();
   
-        // When the battery level changes, call a function
-        characteristic.addEventListener('characteristicvaluechanged',
-                                    handleCharacteristicValueChanged);
+    //     // When the battery level changes, call a function
+    //     characteristic.addEventListener('characteristicvaluechanged',
+    //                                 handleCharacteristicValueChanged);
         
-        // Read the heart rate value
-        const reading = await characteristic.readValue();
+    //     // Read the heart rate value
+    //     const reading = await characteristic.readValue();
   
-        // Show the initial reading on the web page
-        setheartRate(reading.getUint8(1));
-      } catch(error) {
-        console.log(`There was an error: ${error}`);
-      }
-    };
+    //     // Show the initial reading on the web page
+    //     setheartRate(reading.getUint8(1));
+    //   } catch(error) {
+    //     console.log(`There was an error: ${error}`);
+    //   }
+    // };
 
   return (
     //patient information
@@ -141,7 +142,7 @@ function Patient() {
         </Card>
       </CardActions>
 
-      {/*deive info*/}
+      {/* devicee info
       <CardActions disableSpacing>
         <Card sx={{ width: 250 }} class="card2">
           <CardContent>
@@ -164,24 +165,9 @@ function Patient() {
             </Typography>
           </CardContent>
         </Card>
-      </CardActions>
+      </CardActions> */}
 
-      
-      {supportsBluetooth && isDisconnected &&
-        <Button class="button"
-        id="webBLEButton"
-        variant="contained"
-        size="medium"
-        onClick={connectToDeviceAndSubscribeToUpdates}
-      >
-        Device BLE
-      </Button>
-      }
-      {!supportsBluetooth &&
-        <p>This browser doesn't support the Web Bluetooth API</p>
-      }
-
-      <LineChart />
+      <DevicesView />
 
     </Container>
 

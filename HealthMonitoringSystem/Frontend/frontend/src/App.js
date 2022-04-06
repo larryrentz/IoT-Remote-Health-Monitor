@@ -11,7 +11,6 @@ function App() {
 
   //Get current user and store use as the default for app context
   const [user] = useAuthState(auth);
-  const [context, setContext] = useState({user, devices: []});
 
   // When the component mounts, check that the browser supports Bluetooth
   useEffect(() => {
@@ -21,13 +20,13 @@ function App() {
   }, []);
 
   const signInPage = <Signin />;
-  const dashboard = <Dashboard />;
+  const dashboard = <Dashboard user={user}/>;
 
   return (
-    <Context.Provider value={{context, setContext}}>
+    <>
       {user && supportsBluetooth && dashboard}
       {!user && supportsBluetooth && signInPage} 
-    </Context.Provider>
+    </>
   );
 }
 export default App;
