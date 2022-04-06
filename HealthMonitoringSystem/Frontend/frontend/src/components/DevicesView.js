@@ -4,6 +4,8 @@ import LineChart from './LineChart';
 import Device from './Device';
 import Context from '../Context';
 import { firestore } from './Firebase';
+import DeviceModal from './DeviceModal';
+import { Container } from '@mui/material';
 
 export default function DevicesView() {
     const [connectedDevices, setConnectedDevices] = useState([]);
@@ -11,9 +13,8 @@ export default function DevicesView() {
     const {context, setContext} = useContext(Context);
     const user = context.user;
 
-    const connectToDevice = async() => {
-        const service = 'heart_rate';
-        const characteristic = 'heart_rate_measurement';
+    const connectToDevice = async(service, characteristic) => {
+        
         try {
             // Search for Bluetooth devices that advertise a battery service
             const device = await navigator.bluetooth.requestDevice({
@@ -41,19 +42,14 @@ export default function DevicesView() {
     };
 
     return (
-        <div>
+        <Container>
             {connectedDevices}
 
-            {dbRef && <LineChart dbRef={dbRef}/>}
+            
+                <DeviceModal connectedDevice={connectToDevice}/>
+           
 
-            <Button class="button"
-                id="webBLEButton"
-                variant="contained"
-                size="medium"
-                onClick={connectToDevice}
-            >
-                Device BLE
-            </Button>
-        </div>  
+            {dbRef && <LineChart dbRef={dbRef}/>}
+        </Container>  
     );
 }
