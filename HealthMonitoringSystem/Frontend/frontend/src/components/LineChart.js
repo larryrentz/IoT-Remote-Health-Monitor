@@ -3,10 +3,9 @@ import React, { useState, useEffect } from 'react'
 import Plot from 'react-plotly.js'
 import { auth, firestore } from './Firebase'
 
-const LineChart = () => {
+const LineChart = ({dbRef}) => {
     const [time, setTime] = useState(new Date());
     const [data , setData] = useState([null]);
-    const hrRef = firestore.collection(`users/${auth.currentUser.uid}/heartRate`);
 
     //Fetch data every 2 seconds
     useEffect(() => {
@@ -21,13 +20,13 @@ const LineChart = () => {
 
     // Fetch the required data using the get() method
     const FetchData = async () => {
-        const recentHeartRates = await hrRef.orderBy('createdAt', 'desc').limit(10).get()
+        const recentReadings = await dbRef.orderBy('createdAt', 'desc').limit(10).get()
         .then((querySnapshot) => {
-            let heartRates = [];
+            let dataPoints = [];
             querySnapshot.forEach((doc) => {
-                heartRates.push({ ...doc.data(), id: doc.id})
+                dataPoints.push({ ...doc.data(), id: doc.id})
             })
-            setData(heartRates);
+            setData(dataPoints);
         })
         .catch(err => {
             console.log(err);
@@ -40,16 +39,16 @@ const LineChart = () => {
             data={[
                 {
                     //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-                    y: [data[9].heartRate, data[8].heartRate, data[7].heartRate, 
-                        data[6].heartRate, data[5].heartRate, data[4].heartRate, 
-                        data[3].heartRate, data[2].heartRate, data[1].heartRate, 
-                        data[0].heartRate],
+                    y: [data[9].reading, data[8].reading, data[7].reading, 
+                        data[6].reading, data[5].reading, data[4].reading, 
+                        data[3].reading, data[2].reading, data[1].reading, 
+                        data[0].reading],
                     type: 'line',
                     mode: 'lines+markers',
                     marker: {color: 'red'},
                 }
             ]}  
-            layout={ {width: 400, height: 400, title: 'Heart Rate'} }
+            layout={ {width: 400, height: 400, title: 'History'} }
         />
         : <p>No data</p>}
     </div>
