@@ -3,7 +3,7 @@ import firebase from 'firebase/compat/app';
 import { CardActions, Card, CardContent, Typography } from '@mui/material';
 import Context from '../Context';
 
-export default function Device({key, device, deviceService, deviceCharacteristic, dbRef}) {
+export default function Device({key, device, deviceService, deviceCharacteristic, dbRef, onClick}) {
     const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
     const [isDisconnected, setIsDisconnected] = useState(false);
@@ -39,7 +39,7 @@ export default function Device({key, device, deviceService, deviceCharacteristic
     }, [time]);
 
     const onDisconnected = (event) => {
-        alert(`Device: ${event.target.name} is disconnected`);
+        alert(`Device: ${deviceName} is disconnected`);
         setIsDisconnected(true);
     }
 
@@ -61,7 +61,7 @@ export default function Device({key, device, deviceService, deviceCharacteristic
         setContext(newContext);
 
         let now = new Date()
-        console.log(`> ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} - ${event.target.name} is now ${value}`);
+        console.log(`> ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} - ${deviceName} - ${value}`);
     }
 
     /**
@@ -70,8 +70,6 @@ export default function Device({key, device, deviceService, deviceCharacteristic
     */
     const subscribeToUpdates = async () => {
         try {
-            console.log(deviceService);
-            console.log(deviceCharacteristic);
             device.addEventListener('gattserverdisconnected', onDisconnected);
 
             // Set the device name
@@ -105,7 +103,7 @@ export default function Device({key, device, deviceService, deviceCharacteristic
 
     return (
         <CardActions disableSpacing>
-            <Card sx={{ width: 250 }} class="card2">
+            <Card sx={{ width: 250 }} class="card2" onClick={onClick}>
                 <CardContent>
                     <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
                         Device Information

@@ -14,6 +14,11 @@ export default function DevicesView() {
 
     const selectDevice = (event) => {
         setSelectedDevice(event.target);
+        const device = event.target.props;
+        console.log(`${device.key} selected`)
+        setDbRef(
+            `users/${user.uid}/devices/${device.key}/services/${device.deviceService}/characteristics/${device.characteristic}/readings`
+        )
     }
     const connectToDevice = async() => {
         const service = 'heart_rate';
@@ -24,6 +29,7 @@ export default function DevicesView() {
                 filters: [{services: [service]}]
             });
             console.log(user);
+            console.log(device.name);
             const dbRef = firestore.collection(`users/${user.uid}/devices/${device.name}/services/${service}/characteristics/${characteristic}/readings`);
 
             // TODO: Pass as props into patients or display below
