@@ -43,12 +43,31 @@ const LineChart = ({dbRef}) => {
                         data[6].reading, data[5].reading, data[4].reading, 
                         data[3].reading, data[2].reading, data[1].reading, 
                         data[0].reading],
-                    type: 'line',
+                    type: 'scatter',
                     mode: 'lines+markers',
                     marker: {color: 'red'},
                 }
             ]}  
-            layout={ {width: 400, height: 400, title: 'History'} }
+            layout={ {width: 400, height: 400, title: 'Heart Rate',
+                    yaxis: {
+                        title: {
+                            text: 'Heart Rate (bps)',
+                            font: {
+                                family: 'Courier New, monospace',
+                                size: 18,
+                                color: '#7f7f7f'
+                            }
+                        }        
+                    },
+                    xaxis: {
+                        visible: false,
+                        showgrid: false,
+                        showline: false,
+                        zeroline: false,
+                        showticklabels: false
+                    }
+                }
+            }
         />
         : <p>No data</p>}
     </div>
