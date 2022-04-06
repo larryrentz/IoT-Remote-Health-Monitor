@@ -23,7 +23,8 @@ export default function DevicesView() {
             console.log(device.name);
             const dbRef = firestore.collection(`users/${user.uid}/devices/${device.name}/services/${service}/characteristics/${characteristic}/readings`);
             setDbRef(dbRef);
-
+            console.log("old devices")
+            console.log(connectedDevices)
             // TODO: Pass as props into patients or display below
             setConnectedDevices([...connectedDevices,
                 <Device
@@ -32,6 +33,8 @@ export default function DevicesView() {
                     deviceService={service}
                     deviceCharacteristic={characteristic}
                     dbRef={dbRef}
+                    connectedDevices={connectedDevices}
+                    setConnectedDevices={setConnectedDevices}
                 />
             ]);
         }

@@ -2,8 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/compat/app';
 import { CardActions, Card, CardContent, Typography } from '@mui/material';
 import Context from '../Context';
+import Button from '@mui/material/Button';
 
-export default function Device({device, deviceService, deviceCharacteristic, dbRef}) {
+export default function Device({device, deviceService, deviceCharacteristic, dbRef, connectedDevices, setConnectedDevices}) {
     const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
     const [isDisconnected, setIsDisconnected] = useState(false);
@@ -40,6 +41,11 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
 
     const onDisconnected = (event) => {
         alert(`Device: ${deviceName} is disconnected`);
+        device.gatt.disconnect();
+        const newConnectedDevices = connectedDevices.filter(device => device.props.deviceName === deviceName)
+        console.log("newConnectedDevices");
+        console.log(newConnectedDevices);
+        setConnectedDevices(newConnectedDevices);
         setIsDisconnected(true);
     }
 
@@ -106,16 +112,33 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
                     <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
                         Device Information
                     </Typography>
-                    <Typography sx={{ mb: 1.5 }} color="black">
-                        Name: {deviceName}
-                    </Typography>
+                    {!isDisconnected &&
+                        <Typography sx={{ mb: 1.5 }} color="black">
+                            Name: {deviceName}
+                        </Typography>
+                    }
                     <Typography variant="body1" color="black">
                         Device Data:
                     </Typography>
-                    <Typography variant="body2" color="black">
-                        Measurement: {reading}
-                    </Typography>
+                    {!isDisconnected &&
+                        <Typography variant="body2" color="black">
+                            Measurement: {reading}
+                        </Typography>
+                    }
+                    
                 </CardContent>
+
+            {!isDisconnected &&
+                <Button class="button"
+                id="disButton"
+                variant="contained"
+                size="medium"
+                onClick={onDisconnected}
+                >
+                Disconnect Device
+                </Button>
+            }
+
             </Card>
         </CardActions>
     )
