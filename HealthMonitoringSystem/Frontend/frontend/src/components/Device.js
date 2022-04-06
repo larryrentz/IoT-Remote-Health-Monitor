@@ -107,7 +107,7 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     return (
         <>
             {!isDisconnected && <CardActions disableSpacing>
-                <Card sx={{ width: 250, padding: 10 }} class="card2">
+                <Card>
                     <CardContent>
                         <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
                             Device Information
