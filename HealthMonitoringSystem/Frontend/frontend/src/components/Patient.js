@@ -1,18 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Container } from '@mui/material';
-import { Grid } from '@mui/material';
 import './Patient.css';
 import { auth, firestore } from './Firebase';
 import firebase from 'firebase/compat/app';
 // import firebase from './Firebase';
 import { useCollectionData } from "react-firebase-hooks/firestore"
 import LineChart from './LineChart';
+import DeviceModal from './DeviceModal.js';
 
 
 function Patient() {
@@ -125,6 +124,9 @@ function Patient() {
     //patient information
     <Container class="container">
       <h1>Dashboard</h1>
+      <div>
+        <DeviceModal/>
+      </div>
       <CardActions disableSpacing>
         <Card sx={{ width: 250 }} class="card1">
           <CardContent>
