@@ -3,11 +3,11 @@ import firebase from 'firebase/compat/app';
 import { CardActions, Card, CardContent, Typography } from '@mui/material';
 import Context from '../Context';
 
-export default function Device({key, device, deviceService, deviceCharacteristic, dbRef, onClick}) {
+export default function Device({device, deviceService, deviceCharacteristic, dbRef}) {
     const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
     const [isDisconnected, setIsDisconnected] = useState(false);
-    const [deviceName, setdeviceName] = useState(null);
+    const [deviceName, setdeviceName] = useState(device.name);
     const [reading, setDeviceReading] = useState(0);
     
     useEffect(() => {
@@ -21,7 +21,7 @@ export default function Device({key, device, deviceService, deviceCharacteristic
             // console.log(`${time.toLocaleTimeString()} - ${heartRate} BPM`);
 
             // push the heart rate if it exists
-            if(device && !isDisconnected && false) {
+            if(device && !isDisconnected) {
                 dbRef.add({
                   reading: reading,
                   createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -103,7 +103,7 @@ export default function Device({key, device, deviceService, deviceCharacteristic
 
     return (
         <CardActions disableSpacing>
-            <Card sx={{ width: 250 }} class="card2" onClick={onClick}>
+            <Card sx={{ width: 250 }} class="card2">
                 <CardContent>
                     <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
                         Device Information

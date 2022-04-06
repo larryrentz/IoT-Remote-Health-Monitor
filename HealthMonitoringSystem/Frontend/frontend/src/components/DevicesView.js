@@ -8,18 +8,9 @@ import { firestore } from './Firebase';
 export default function DevicesView() {
     const [connectedDevices, setConnectedDevices] = useState([]);
     const [dbRef, setDbRef] = useState(null);
-    const [selectedDevice, setSelectedDevice] = useState(null);
     const {context, setContext} = useContext(Context);
     const user = context.user;
 
-    const selectDevice = (event) => {
-        setSelectedDevice(event.target);
-        const device = event.target.props;
-        console.log(`${device.key} selected`)
-        setDbRef(
-            `users/${user.uid}/devices/${device.key}/services/${device.deviceService}/characteristics/${device.characteristic}/readings`
-        )
-    }
     const connectToDevice = async() => {
         const service = 'heart_rate';
         const characteristic = 'heart_rate_measurement';
@@ -31,6 +22,7 @@ export default function DevicesView() {
             console.log(user);
             console.log(device.name);
             const dbRef = firestore.collection(`users/${user.uid}/devices/${device.name}/services/${service}/characteristics/${characteristic}/readings`);
+            setDbRef(dbRef);
 
             // TODO: Pass as props into patients or display below
             setConnectedDevices([...connectedDevices,
@@ -40,7 +32,6 @@ export default function DevicesView() {
                     deviceService={service}
                     deviceCharacteristic={characteristic}
                     dbRef={dbRef}
-                    onClick={selectDevice}
                 />
             ]);
         }
@@ -53,7 +44,7 @@ export default function DevicesView() {
         <div>
             {connectedDevices}
 
-            {selectedDevice && <LineChart dbRef={dbRef}/>}
+            {dbRef && <LineChart dbRef={dbRef}/>}
 
             <Button class="button"
                 id="webBLEButton"
