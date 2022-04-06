@@ -10,45 +10,6 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { TextField } from '@mui/material';
 
-
-function onButtonClick() {
-    // Validate services UUID entered by user first.
-    let optionalServices = document.querySelector('#optionalServices').value;
-  
-    console.log('Requesting any Bluetooth Device...');
-    navigator.bluetooth.requestDevice({
-     // filters: [...] <- Prefer filters to save energy & show relevant devices.
-        acceptAllDevices: true,
-        optionalServices: [optionalServices]})
-    .then(device => {
-      console.log('Connecting to GATT Server...');
-      return device.gatt.connect();
-    })
-    .then(server => {
-      // Note that we could also get all services that match a specific UUID by
-      // passing it to getPrimaryServices().
-      console.log('Getting Services...');
-      return server.getPrimaryServices();
-    })
-    .then(services => {
-      console.log('Getting Characteristics...');
-      let queue = Promise.resolve();
-      services.forEach(service => {
-        queue = queue.then(_ => service.getCharacteristics().then(characteristics => {
-          console.log('> Service: ' + service.uuid);
-          characteristics.forEach(characteristic => {
-            console.log('>> Characteristic: ' + characteristic.uuid + ' ' +
-                getSupportedProperties(characteristic));
-          });
-        }));
-      });
-      return queue;
-    })
-    .catch(error => {
-      console.log('Argh! ' + error);
-    });
-  }
-  
   /* Utils */
   
   function getSupportedProperties(characteristic) {
@@ -61,7 +22,16 @@ function onButtonClick() {
     return '[' + supportedProperties.join(', ') + ']';
   }
 
-function DeviceModal() {
+function DeviceModal({connectedDevice}) {
+
+  function onButtonClick() {
+    let optionalServices = document.querySelector('#optionalServices').value;
+    let characteristic = document.querySelector('#characteristic').value;
+    connectedDevice(optionalServices, characteristic);
+  
+    console.log(optionalServices);
+    console.log(characteristic);
+  }
 
   const style = {
     position: 'absolute',
@@ -80,14 +50,10 @@ function DeviceModal() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  
-  const [service, setService] = React.useState('');
-  const handleChange = (event) => {setService(event.target.value);};
-
 
   return (
     <Container>
-        <Button onClick={handleOpen}>Device Configuration</Button>
+        <Button onClick={handleOpen} class="button" style={{marginBottom: 30, marginLeft: -50}}> Device Configuration</Button>
         <Modal
         open={open}
         onClose={handleClose}
@@ -96,20 +62,11 @@ function DeviceModal() {
         >
         <Box sx={style}>
             <Typography sx={{ mt: 2 }}> 
-            <TextField id='optionalServices'></TextField>
-              {/* <FormControl fullWidth>
-                <InputLabel>Services</InputLabel>
-                  <Select
-                    label="Services"
-
-                    onChange={handleChange}
-                  >
-                  <MenuItem value='heart_rate'>heart_rate</MenuItem>
-                  </Select>
-            </FormControl> */}
+            <TextField id='optionalServices' label="Service" style={{marginLeft: 0,}}></TextField>
+            <TextField id='characteristic' label="Characteristic" style={{marginLeft: -195, marginTop: 80}}></TextField>
             </Typography>
             <Typography variant="h6" component="h2">
-            <Button onClick={onButtonClick}>Discover Services and Characteristics</Button>
+            <Button onClick={onButtonClick} class="button">Discover Services and Characteristics</Button>
             </Typography>
         </Box>
         </Modal>

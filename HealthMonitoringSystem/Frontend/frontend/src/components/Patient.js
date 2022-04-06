@@ -12,9 +12,6 @@ function Patient() {
     //patient information
     <Container class="container">
       <h1>Dashboard</h1>
-      <div>
-        <DeviceModal/>
-      </div>
       <CardActions disableSpacing>
         <Card sx={{ width: 250 }} class="card1">
           <CardContent>
