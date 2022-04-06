@@ -5,7 +5,7 @@ import { Box, Typography } from '@mui/material';
 import Signin from './components/SignIn';
 import Patient from './components/Patient.js'
 import FAQs from './components/FAQs.js'
-import Alerts from './components/Alerts'
+import Alerts from './components/Alerts.js'
 import ProfilePicture from './components/ProfilePicture';
 
 function App() {
