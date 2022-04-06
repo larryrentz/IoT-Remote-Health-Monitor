@@ -130,6 +130,19 @@ function Patient() {
           
             </Typography>
           </CardContent>
+
+          
+          {supportsBluetooth && isDisconnected &&
+            <Button class="button"
+            id="disButton"
+            variant="contained"
+            size="medium"
+            onClick={onDisconnected}
+            >
+            Disconnect Device
+          </Button>
+          }
+
         </Card>
       </CardActions>
 
@@ -142,17 +155,6 @@ function Patient() {
         onClick={connectToDeviceAndSubscribeToUpdates}
       >
         Device BLE
-      </Button>
-      }
-
-      {supportsBluetooth && isDisconnected &&
-        <Button class="button"
-        id="disButton"
-        variant="contained"
-        size="medium"
-        onClick={onDisconnected}
-        >
-        Disconnect Device
       </Button>
       }
 
