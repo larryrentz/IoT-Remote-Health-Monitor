@@ -52,12 +52,10 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
         setDeviceReading(value);
         
         /**
-         * 
+         * Changing the application level context
          */
-        const newContext = {
-            ...context,
-            devices: {...context.devices, deviceName: value}
-        };
+        const newContext = {...context};
+        newContext.devices[deviceName] = value;
         setContext(newContext);
 
         let now = new Date()
