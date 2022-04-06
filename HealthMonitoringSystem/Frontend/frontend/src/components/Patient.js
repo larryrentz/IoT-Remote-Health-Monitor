@@ -31,7 +31,62 @@ function Patient() {
         </Card>
       </CardActions>
 
+      {/*deive info*/}
+      <CardActions disableSpacing>
+        <Card sx={{ width: 250 }} class="card2">
+          <CardContent>
+            <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
+              Device Information
+            </Typography>
+            {supportsBluetooth && !isDisconnected &&
+              <Typography sx={{ mb: 1.5 }} color="black">
+                Name: {deviceName}
+              </Typography>
+            }
+            <Typography variant="body1" color="black">
+              Device Data:
+              {supportsBluetooth && !isDisconnected &&
+                <Typography variant="body2" color="black">
+                  Heart rate: {heartRate}
+                </Typography>
+              }
+          
+            </Typography>
+          </CardContent>
+
+          
+          {supportsBluetooth && isDisconnected &&
+            <Button class="button"
+            id="disButton"
+            variant="contained"
+            size="medium"
+            onClick={onDisconnected}
+            >
+            Disconnect Device
+          </Button>
+          }
+
+        </Card>
+      </CardActions>
+
+      
+      {supportsBluetooth && isDisconnected &&
+        <Button class="button"
+        id="webBLEButton"
+        variant="contained"
+        size="medium"
+        onClick={connectToDeviceAndSubscribeToUpdates}
+      >
+        Device BLE
+      </Button>
+      }
+
+      {!supportsBluetooth &&
+        <p>This browser doesn't support the Web Bluetooth API</p>
+      }
+
       <DevicesView />
+
 
     </Container>
 

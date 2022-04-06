@@ -10,8 +10,14 @@ function Alerts () {
     const [openWarn, setWarnOpen] = React.useState(true);
     const [openSucess, setSucessOpen] = React.useState(true);
 
-    const heartRate = () => {
-        
+    const temp = 80;
+
+    const alertCheck = event =>{
+        if(temp > 98){
+            setErrorOpen(true);
+        }else{
+            setErrorOpen(false);
+        }
     }
 
     return (
@@ -22,6 +28,7 @@ function Alerts () {
         <Stack spacing={2}>
             <Collapse in={openError}>
                 <Alert severity="error"
+                    hidden = {event => alertCheck()}
                     action={
                         <IconButton
                             aria-label ="close"
