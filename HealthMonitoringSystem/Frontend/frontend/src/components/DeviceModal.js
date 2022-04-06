@@ -8,6 +8,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { TextField } from '@mui/material';
 
 
 function onButtonClick() {
@@ -64,6 +65,7 @@ function DeviceModal() {
 
   const style = {
     position: 'absolute',
+    marginLeft: '200px',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
@@ -94,16 +96,17 @@ function DeviceModal() {
         >
         <Box sx={style}>
             <Typography sx={{ mt: 2 }}> 
-              <FormControl fullWidth id="optionalServices">
+            <TextField id='optionalServices'></TextField>
+              {/* <FormControl fullWidth>
                 <InputLabel>Services</InputLabel>
                   <Select
                     label="Services"
+
                     onChange={handleChange}
                   >
                   <MenuItem value='heart_rate'>heart_rate</MenuItem>
                   </Select>
-            </FormControl>
-            {/* <p id='optionalServices'>{service}</p> */}
+            </FormControl> */}
             </Typography>
             <Typography variant="h6" component="h2">
             <Button onClick={onButtonClick}>Discover Services and Characteristics</Button>
