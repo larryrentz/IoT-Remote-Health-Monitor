@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Button } from '@mui/material';
+import { Button, Box } from '@mui/material';
 import LineChart from './LineChart';
 import Device from './Device';
 import Context from '../Context';
@@ -33,10 +33,19 @@ export default function DevicesView() {
                     deviceService={service}
                     deviceCharacteristic={characteristic}
                     dbRef={dbRef}
-                    connectedDevices={connectedDevices}
-                    setConnectedDevices={setConnectedDevices}
+                    deviceDisconnected={false}
                 />
             ]);
+            // setConnectedDevices(
+            //     [<Device
+            //         key={device.name}
+            //         device={device}
+            //         deviceService={service}
+            //         deviceCharacteristic={characteristic}
+            //         dbRef={dbRef}
+            //         deviceDisconnected={false}
+            //     />]
+            // );
         }
         catch(error) {
             console.log(`Error connecting to device: ${error}`)
@@ -45,7 +54,10 @@ export default function DevicesView() {
 
     return (
         <div>
-            {connectedDevices}
+            <Box sx={{ display: 'flex', justifyContent: 'start'}}>
+                {connectedDevices}
+            </Box>
+            
 
             {dbRef && <LineChart dbRef={dbRef}/>}
 

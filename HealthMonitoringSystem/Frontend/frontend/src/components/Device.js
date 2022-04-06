@@ -4,10 +4,10 @@ import { CardActions, Card, CardContent, Typography } from '@mui/material';
 import Context from '../Context';
 import Button from '@mui/material/Button';
 
-export default function Device({device, deviceService, deviceCharacteristic, dbRef, connectedDevices, setConnectedDevices}) {
+export default function Device({device, deviceService, deviceCharacteristic, dbRef, deviceDisconnected}) {
     const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
-    const [isDisconnected, setIsDisconnected] = useState(false);
+    const [isDisconnected, setIsDisconnected] = useState(deviceDisconnected);
     const [deviceName, setdeviceName] = useState(device.name);
     const [reading, setDeviceReading] = useState(0);
     
@@ -40,13 +40,12 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     }, [time]);
 
     const onDisconnected = (event) => {
-        alert(`Device: ${deviceName} is disconnected`);
         device.gatt.disconnect();
-        const newConnectedDevices = connectedDevices.filter(device => device.props.deviceName === deviceName)
-        console.log("newConnectedDevices");
-        console.log(newConnectedDevices);
-        setConnectedDevices(newConnectedDevices);
         setIsDisconnected(true);
+        deviceDisconnected = true;
+        setTimeout(()=>{
+            // alert(`Device: ${deviceName} is disconnected`);
+        }, 100);
     }
 
     /**
@@ -106,40 +105,40 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     };
 
     return (
-        <CardActions disableSpacing>
-            <Card sx={{ width: 250 }} class="card2">
-                <CardContent>
-                    <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
-                        Device Information
-                    </Typography>
-                    {!isDisconnected &&
-                        <Typography sx={{ mb: 1.5 }} color="black">
-                            Name: {deviceName}
+        <>
+            {!isDisconnected && <CardActions disableSpacing>
+                <Card sx={{ width: 250, padding: 10 }} class="card2">
+                    <CardContent>
+                        <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
+                            Device Information
                         </Typography>
-                    }
-                    <Typography variant="body1" color="black">
-                        Device Data:
-                    </Typography>
-                    {!isDisconnected &&
-                        <Typography variant="body2" color="black">
-                            Measurement: {reading}
+                        {!isDisconnected &&
+                            <Typography sx={{ mb: 1.5 }} color="black">
+                                Name: {deviceName}
+                            </Typography>
+                        }
+                        <Typography variant="body1" color="black">
+                            Device Data:
                         </Typography>
-                    }
-                    
-                </CardContent>
-
-            {!isDisconnected &&
-                <Button class="button"
-                id="disButton"
-                variant="contained"
-                size="medium"
-                onClick={onDisconnected}
-                >
-                Disconnect Device
-                </Button>
-            }
-
-            </Card>
-        </CardActions>
+                        {!isDisconnected &&
+                            <Typography variant="body2" color="black">
+                                Measurement: {reading}
+                            </Typography>
+                        }
+                        
+                        {!isDisconnected &&
+                            <Button class="button"
+                            id="disButton"
+                            variant="contained"
+                            size="medium"
+                            onClick={onDisconnected}
+                            >
+                            Disconnect Device
+                            </Button>
+                        }
+                    </CardContent>
+                </Card>
+            </CardActions>}
+        </>
     )
 }
