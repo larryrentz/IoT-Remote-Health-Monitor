@@ -13,7 +13,7 @@ function Dashboard({user}) {
             <Box
             sx={{
                 width: '100%',
-                height: '140px',
+                minHeight: '100vh',
                 '& > .MuiBox-root > .MuiBox-root': {
                 p: 1,
                 borderRadius: 2,
@@ -26,6 +26,7 @@ function Dashboard({user}) {
                 sx={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, 1fr)',
+                    gridTemplateRows: '10vh 80vh 10vh',
                     gridTemplateAreas: `"header header header header" "main main main sidebar" "footer footer footer sidebar"`
                 }}
                 >
