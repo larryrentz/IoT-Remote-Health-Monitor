@@ -53,7 +53,7 @@ export default function DevicesView() {
 
     return (
         <div>
-            <Box sx={{ display: 'flex', justifyContent: 'start'}}>
+            <Box sx={{ display: 'flex', justifyContent: 'start', maxWidth: '100%', maxHeight: '100%', overflow: 'auto'}}>
                 {connectedDevices}
             </Box>
             <DeviceModal connectedDevice={connectToDevice}/>

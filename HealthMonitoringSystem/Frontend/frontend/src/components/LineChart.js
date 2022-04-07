@@ -93,8 +93,7 @@ const LineChart = () => {
             alignItems: 'center'
         }}
         >
-            {/* <h2>No Data</h2> */}
-            No Data
+            <h2>No Data</h2>
         </Card>}
     </div>
     
