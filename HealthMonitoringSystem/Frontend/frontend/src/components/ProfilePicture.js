@@ -2,8 +2,8 @@ import { React, useState } from 'react'
 import { Avatar, IconButton } from "@mui/material"
 import { styled } from '@mui/material/styles';
 
-function ProfilePicture() {
-    const [pfp, setPfp] = useState(null);
+function ProfilePicture(props) {
+    const [pfp, setPfp] = useState(props.default);
 
     const Input = styled('input')({
         display: 'none',
@@ -19,7 +19,7 @@ function ProfilePicture() {
                 <Input accept="image/*" id="icon-button-file" type="file" onChange={changePfp}/>
                 <IconButton color="primary" aria-label="upload picture" component="span" sx={{ padding: 0 }}>
                     <Avatar 
-                        sx={{ width: "7vw", height: "7vw" }}
+                        sx={{ width: "12vw", height: "12vw" }}
                         src={pfp}
                     />
                 </IconButton>

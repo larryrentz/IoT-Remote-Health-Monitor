@@ -1,15 +1,18 @@
 import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/compat/app';
-import { CardActions, Card, CardContent, Typography } from '@mui/material';
+import { CardActions, Card, CardContent, Typography, Box, IconButton, Button } from '@mui/material';
 import Context from '../Context';
-import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
 
-export default function Device({device, deviceService, deviceCharacteristic, dbRef, deviceDisconnected}) {
+export default function Device({device, deviceService, deviceCharacteristic, dbRef}) {
     const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
-    const [isDisconnected, setIsDisconnected] = useState(deviceDisconnected);
+    const [isDisconnected, setIsDisconnected] = useState(false);
+    const [isClosed, setIsClosed] = useState(false);
     const [deviceName, setdeviceName] = useState(device.name);
     const [reading, setDeviceReading] = useState(0);
+
+    const [backgroundColor, setBackgroundColor] = useState('lightgreen');
     
     useEffect(() => {
         subscribeToUpdates();
@@ -39,13 +42,23 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
         }, 2000);
     }, [time]);
 
+    const onSelected = (event) => {
+        const newContext = {...context};
+        newContext['selectedDevice'] = deviceName;
+        console.log(newContext);
+        setContext(newContext);
+    }
+
     const onDisconnected = (event) => {
         device.gatt.disconnect();
         setIsDisconnected(true);
-        deviceDisconnected = true;
-        setTimeout(()=>{
-            // alert(`Device: ${deviceName} is disconnected`);
-        }, 100);
+        setBackgroundColor('lightcoral');
+        context.devices[deviceName]['isDisconnected'] = true;
+    }
+
+    const onClosed = (event) => {
+        setIsClosed(true);
+        onDisconnected();
     }
 
     /**
@@ -60,7 +73,7 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
          * Changing the application level context
          */
         const newContext = {...context};
-        newContext.devices[deviceName] = value;
+        newContext.devices[deviceName]['reading'] = value;
         setContext(newContext);
 
         let now = new Date()
@@ -74,6 +87,11 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     const subscribeToUpdates = async () => {
         try {
             device.addEventListener('gattserverdisconnected', onDisconnected);
+
+            // Set the device as connected
+            setIsDisconnected(false);
+            context.devices[deviceName]['isDisconnected'] = false;
+            setBackgroundColor('lightgreen');
 
             // Set the device name
             setdeviceName(device.name);
@@ -106,36 +124,52 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
 
     return (
         <>
-            {!isDisconnected && <CardActions disableSpacing>
-                <Card>
-                    <CardContent>
-                        <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
-                            Device Information
-                        </Typography>
-                        {!isDisconnected &&
-                            <Typography sx={{ mb: 1.5 }} color="black">
+            {!isClosed && <CardActions disableSpacing>
+                <Card sx={{
+                    bgcolor: backgroundColor,
+                    borderRadius: 4,
+                    
+                }}
+                onClick={onSelected}
+                >
+                    <CardContent sx={{
+                        display: 'flex',
+                        flexDirection: 'column'
+                    }}
+                    >
+                        <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 2}}>
+                            <Typography sx={{ marginRight: 2}} variant='h6'>
+                                    Device Information
+                            </Typography>
+                            <IconButton onClick={onClosed}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+                        <Box sx={{ marginBottom: 2 }}>
+                            <Typography>
                                 Name: {deviceName}
                             </Typography>
-                        }
-                        <Typography variant="body1" color="black">
-                            Device Data:
-                        </Typography>
-                        {!isDisconnected &&
-                            <Typography variant="body2" color="black">
-                                Measurement: {reading}
+                            <Typography variant="body1" color="black">
+                                Device Data:
                             </Typography>
-                        }
-                        
-                        {!isDisconnected &&
-                            <Button class="button"
-                            id="disButton"
-                            variant="contained"
-                            size="medium"
-                            onClick={onDisconnected}
-                            >
-                            Disconnect Device
-                            </Button>
-                        }
+                            {!isDisconnected &&
+                                <Typography variant="body2" color="black">
+                                    Measurement: {reading}
+                                </Typography>
+                            }
+                        </Box>
+                        <Box sx={{ alignSelf: 'center'}}>
+                            {!isDisconnected &&
+                                <Button variant='contained' onClick={onDisconnected}>
+                                    Disconnect Device
+                                </Button>
+                            }
+                            {isDisconnected &&
+                                <Button variant='contained' color='error' onClick={subscribeToUpdates}>
+                                    Reconnect Device
+                                </Button>
+                            }
+                        </Box>
                     </CardContent>
                 </Card>
             </CardActions>}

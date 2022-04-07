@@ -1,18 +1,33 @@
+import { Card } from '@mui/material';
 import { QuerySnapshot } from 'firebase/firestore';
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Plot from 'react-plotly.js'
+import Context from '../Context';
 import { auth, firestore } from './Firebase'
 
-const LineChart = ({dbRef}) => {
+const LineChart = () => {
+    const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
     const [data , setData] = useState([null]);
+    const [dbRef, setDbRef] = useState(null);
+    const device = context.devices['Polar H10 9C3FB127'];
 
     //Fetch data every 2 seconds
     useEffect(() => {
         setTimeout(() => {
-            FetchData();
-            console.log(data);
-            
+            if(dbRef) {
+                FetchData();
+                // console.log(data);
+            }
+            else {
+                if(device) {
+                    const newDbRef = device['dbRef'];
+                    if(newDbRef) {
+                        setDbRef(newDbRef);
+                    }
+                }
+            }
+
             // trigger the effect again by changing the time dependency
             setTime(new Date());
         }, 2000);
@@ -34,7 +49,7 @@ const LineChart = ({dbRef}) => {
     }
   return (
     <div>
-        {data.length == 10 ? 
+        {data.length == 10 && !device['isDisconnected'] ? 
         <Plot
             data={[
                 {
@@ -69,7 +84,18 @@ const LineChart = ({dbRef}) => {
                 }
             }
         />
-        : <p>No data</p>}
+        :
+        <Card sx={{
+            width: 400,
+            height: 400,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+        }}
+        >
+            {/* <h2>No Data</h2> */}
+            No Data
+        </Card>}
     </div>
     
   )

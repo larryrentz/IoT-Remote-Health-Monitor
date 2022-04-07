@@ -35,15 +35,16 @@ function DeviceModal({connectedDevice}) {
 
   const style = {
     position: 'absolute',
-    marginLeft: '200px',
-    top: '50%',
+    top: '40%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: '35%',
     bgcolor: 'background.paper',
-    border: '2px solid #000',
     boxShadow: 24,
+    borderRadius: 4,
     p: 4,
+    display: 'flex',
+    flexDirection: 'column',
   };
 
   const [open, setOpen] = React.useState(false);
@@ -52,25 +53,35 @@ function DeviceModal({connectedDevice}) {
 
 
   return (
-    <Container>
-        <Button onClick={handleOpen} class="button" style={{marginBottom: 30, marginLeft: -50}}> Device Configuration</Button>
-        <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-        >
-        <Box sx={style}>
-            <Typography sx={{ mt: 2 }}> 
-            <TextField id='optionalServices' label="Service" style={{marginLeft: 0,}}></TextField>
-            <TextField id='characteristic' label="Characteristic" style={{marginLeft: -195, marginTop: 80}}></TextField>
-            </Typography>
-            <Typography variant="h6" component="h2">
-            <Button onClick={onButtonClick} class="button">Discover Services and Characteristics</Button>
-            </Typography>
-        </Box>
-        </Modal>
-    </Container>
+    <>
+      <Button sx={{ margin: 1 }} variant='contained' onClick={handleOpen}>
+        Device Configuration
+      </Button>
+      <Container>
+          <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+          >
+          <Box sx={style}>
+              <Typography variant='h5' sx={{ textAlign: 'center' }}>
+                Connect to Device
+              </Typography>
+              <Box sx={{textAlign: 'center'}}>
+                <Typography sx={{ mt: 2, marginBottom: 3, display: 'flex', justifyContent: 'space-evenly'}}> 
+                  <TextField id='optionalServices' label="Service"></TextField>
+                  <TextField id='characteristic' label="Characteristic"></TextField>
+                </Typography>
+                <Button onClick={onButtonClick} variant='contained'>
+                    Discover Services and Characteristics
+                </Button>
+              </Box>
+          </Box>
+          </Modal>
+      </Container>
+    </>
+
   )
 
 }

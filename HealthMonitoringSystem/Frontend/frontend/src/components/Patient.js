@@ -10,10 +10,13 @@ import DevicesView from './DevicesView.js';
 function Patient() {
   return (
     //patient information
-    <Container class="container">
+    <Container>
       <h1>Dashboard</h1>
       <CardActions disableSpacing>
-        <Card sx={{ width: 250 }} class="card1">
+        <Card sx={{
+        bgcolor: 'lightblue',
+        borderRadius: 4,
+        }}>
           <CardContent>
             <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
               Patient Information

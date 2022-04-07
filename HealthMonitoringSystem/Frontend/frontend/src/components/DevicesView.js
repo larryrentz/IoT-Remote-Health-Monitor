@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { Button, Box } from '@mui/material';
+import { Button, Box, Typography } from '@mui/material';
 import LineChart from './LineChart';
 import Device from './Device';
 import Context from '../Context';
@@ -24,8 +24,7 @@ export default function DevicesView() {
             console.log(device.name);
             const dbRef = firestore.collection(`users/${user.uid}/devices/${device.name}/services/${service}/characteristics/${characteristic}/readings`);
             setDbRef(dbRef);
-            console.log("old devices")
-            console.log(connectedDevices)
+            
             // TODO: Pass as props into patients or display below
             setConnectedDevices([...connectedDevices,
                 <Device
@@ -37,16 +36,15 @@ export default function DevicesView() {
                     deviceDisconnected={false}
                 />
             ]);
-            // setConnectedDevices(
-            //     [<Device
-            //         key={device.name}
-            //         device={device}
-            //         deviceService={service}
-            //         deviceCharacteristic={characteristic}
-            //         dbRef={dbRef}
-            //         deviceDisconnected={false}
-            //     />]
-            // );
+            const newContext = {...context};
+            const newDevice = {
+                'reading' : -1,
+                'dbRef' : dbRef,
+                'isDisconnected' : false
+            }
+            newContext.devices[device.name] = newDevice;
+            newContext.selectedDevice = device.name;
+            setContext(newContext);
         }
         catch(error) {
             console.log(`Error connecting to device: ${error}`)
@@ -58,13 +56,7 @@ export default function DevicesView() {
             <Box sx={{ display: 'flex', justifyContent: 'start'}}>
                 {connectedDevices}
             </Box>
-            
-
-            
-                <DeviceModal connectedDevice={connectToDevice}/>
-           
-
-            {dbRef && <LineChart dbRef={dbRef}/>}
+            <DeviceModal connectedDevice={connectToDevice}/>
         </div>  
     );
 }
