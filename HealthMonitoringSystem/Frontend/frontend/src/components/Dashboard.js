@@ -9,7 +9,11 @@ import Context from '../Context.js';
 import ProfilePicture from './ProfilePicture';
 
 function Dashboard({user}) {
-    const [context, setContext] = useState({user: user, devices: {}, selectedDevice: ''});
+    const [context, setContext] = useState({
+        user: user,
+        devices: {},
+        selectedDevice: ''
+    });
 
     return (
         <Context.Provider value={{context, setContext}}>

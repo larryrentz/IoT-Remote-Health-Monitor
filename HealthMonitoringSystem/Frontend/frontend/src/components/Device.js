@@ -21,9 +21,6 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     // Push reading to the cloud every 2 seconds
     useEffect(() => {
         setTimeout(() => {
-            // uncomment to log the heart rate and time in the console
-            // console.log(`${time.toLocaleTimeString()} - ${heartRate} BPM`);
-
             // push the heart rate if it exists
             if(device && !isDisconnected) {
                 dbRef.add({
@@ -32,6 +29,7 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
                 })
                 .then((docRef) => {
                   // can do something with the newly created document here
+                  console.log(`Firebase: ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} - ${deviceName} - ${reading}`)
                 })
                 .catch((e) => {
                   console.error(`Error adding document: ${e}`);
@@ -43,17 +41,30 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     }, [time]);
 
     const onSelected = (event) => {
-        const newContext = {...context};
-        newContext['selectedDevice'] = deviceName;
-        console.log(newContext);
-        setContext(newContext);
+        if(!context.devices[deviceName].isDisconnected && context.selectedDevice !== deviceName) {
+            console.log(`Device selected: ${deviceName}`);
+            let newContext = {...context};
+            newContext.selectedDevice = deviceName;
+            setContext(newContext);
+        }
     }
 
-    const onDisconnected = (event) => {
+    const onClickDisconnect = (event) => {
         device.gatt.disconnect();
         setIsDisconnected(true);
         setBackgroundColor('lightcoral');
-        context.devices[deviceName]['isDisconnected'] = true;
+    }
+
+    const onDisconnected = (event) => {
+        let newContext = {...context};
+        newContext.devices[deviceName].isDisconnected = true;
+        if(context.selectedDevice === deviceName) {
+            console.log(`Disconnecting from selected device: ${context.selectedDevice}`);
+            newContext.selectedDevice = '';
+        }
+        setContext(newContext);
+        console.log(`Disconnected from ${deviceName}`);
+        console.log(newContext);
     }
 
     const onClosed = (event) => {
@@ -72,12 +83,12 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
         /**
          * Changing the application level context
          */
-        const newContext = {...context};
-        newContext.devices[deviceName]['reading'] = value;
+        let newContext = {...context};
+        newContext.devices[deviceName].reading = value;
         setContext(newContext);
 
         let now = new Date()
-        console.log(`> ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} - ${deviceName} - ${value}`);
+        console.log(`Local: ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} - ${deviceName} - ${value}`);
     }
 
     /**
@@ -90,7 +101,10 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
 
             // Set the device as connected
             setIsDisconnected(false);
-            context.devices[deviceName]['isDisconnected'] = false;
+            let newContext = {...context};
+            newContext.devices[deviceName].isDisconnected = false;
+            setContext(newContext);
+            
             setBackgroundColor('lightgreen');
 
             // Set the device name
@@ -118,7 +132,7 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
             setDeviceReading(reading.getUint8(1));
         }
         catch(error) {
-            console.log(`There was an error: ${error}`);
+            // console.log(`There was an error: ${error}`);
         }
     };
 
@@ -128,7 +142,6 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
                 <Card sx={{
                     bgcolor: backgroundColor,
                     borderRadius: 4,
-                    
                 }}
                 onClick={onSelected}
                 >
@@ -160,7 +173,7 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
                         </Box>
                         <Box sx={{ alignSelf: 'center'}}>
                             {!isDisconnected &&
-                                <Button variant='contained' onClick={onDisconnected}>
+                                <Button variant='contained' onClick={onClickDisconnect}>
                                     Disconnect Device
                                 </Button>
                             }

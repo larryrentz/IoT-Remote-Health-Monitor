@@ -23,14 +23,18 @@ import { TextField } from '@mui/material';
   }
 
 function DeviceModal({connectedDevice}) {
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   function onButtonClick() {
     let optionalServices = document.querySelector('#optionalServices').value;
     let characteristic = document.querySelector('#characteristic').value;
     connectedDevice(optionalServices, characteristic);
+    handleClose();
   
-    console.log(optionalServices);
-    console.log(characteristic);
+    // console.log(optionalServices);
+    // console.log(characteristic);
   }
 
   const style = {
@@ -46,11 +50,6 @@ function DeviceModal({connectedDevice}) {
     display: 'flex',
     flexDirection: 'column',
   };
-
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
 
   return (
     <>

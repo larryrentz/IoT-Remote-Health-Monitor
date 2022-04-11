@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { Button, Box, Typography } from '@mui/material';
 import LineChart from './LineChart';
 import Device from './Device';
@@ -9,9 +9,22 @@ import { Container } from '@mui/material';
 
 export default function DevicesView() {
     const [connectedDevices, setConnectedDevices] = useState([]);
-    const [dbRef, setDbRef] = useState(null);
     const {context, setContext} = useContext(Context);
     const user = context.user;
+
+    // useEffect(() => {
+    //     let newConnectedDevices = [...connectedDevices];
+    //     newConnectedDevices.filter(device => {
+    //         const deviceName = device.key;
+    //         if(context.devices[deviceName]) {
+    //             return !context.devices[deviceName].isDisconnected;
+    //         }
+
+    //         return true;
+    //     });
+    //     setConnectedDevices(newConnectedDevices);
+    //     console.log(newConnectedDevices);
+    // }, [context.devices]);
 
     const connectToDevice = async(service, characteristic) => {
         
@@ -20,10 +33,9 @@ export default function DevicesView() {
             const device = await navigator.bluetooth.requestDevice({
                 filters: [{services: [service]}]
             });
-            console.log(user);
-            console.log(device.name);
+            // console.log(user);
+            // console.log(device.name);
             const dbRef = firestore.collection(`users/${user.uid}/devices/${device.name}/services/${service}/characteristics/${characteristic}/readings`);
-            setDbRef(dbRef);
             
             // TODO: Pass as props into patients or display below
             setConnectedDevices([...connectedDevices,
@@ -36,15 +48,18 @@ export default function DevicesView() {
                     deviceDisconnected={false}
                 />
             ]);
-            const newContext = {...context};
+            let newContext = {...context};
             const newDevice = {
-                'reading' : -1,
-                'dbRef' : dbRef,
-                'isDisconnected' : false
+                reading : -1,
+                dbRef : dbRef,
+                isDisconnected : false
             }
             newContext.devices[device.name] = newDevice;
             newContext.selectedDevice = device.name;
             setContext(newContext);
+            
+            console.log(`Device connected: ${device.name}`);
+            console.log(newContext);
         }
         catch(error) {
             console.log(`Error connecting to device: ${error}`)
