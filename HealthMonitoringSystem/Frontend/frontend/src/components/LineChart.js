@@ -19,6 +19,8 @@ const LineChart = () => {
             console.log(`New Selected Device: ${selectedDevice}`);
             setDeviceName(selectedDevice);
             setDevice(newDevice);
+            setDbRef(newDevice.dbRef);
+            FetchData();
         }
     }, [context.selectedDevice])
 
@@ -26,13 +28,14 @@ const LineChart = () => {
     useEffect(() => {
         setTimeout(() => {
             if(device && !device.isDisconnected) {
-                // console.log('Getting dbRef ...');
+                console.log('Getting dbRef ...');
                 const newDbRef = device.dbRef;
                 if(newDbRef !== dbRef) {
                     console.log('Getting new dbRef ...');
                     setDbRef(newDbRef);
+                    setData([null]);
                 }
-                if(dbRef) {
+                else if(dbRef) {
                     FetchData();
                     // console.log('Fetching data ...');
                     // console.log(data);
