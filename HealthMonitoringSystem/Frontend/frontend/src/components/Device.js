@@ -177,15 +177,17 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
                         }}
                         >
                             <CardContent sx={{
+                                height: '80%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                justifyContent: 'space-between'
+                                justifyContent: 'space-between',
+                                padding: 3
                             }}
                             >
-                                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 2}}>
+                                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                                     <Typography variant='h6'>Device Information</Typography>
                                 </Box>
-                                <Box sx={{ marginBottom: 2 }}>
+                                <Box>
                                     <Typography>
                                         Name: {deviceName}
                                     </Typography>
