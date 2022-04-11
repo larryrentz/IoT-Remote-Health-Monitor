@@ -1,24 +1,27 @@
 // import * as React from 'react';
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import { Stack, Alert, AlertTitle } from "@mui/material";
 import Collapse from '@mui/material/Collapse';
 import { IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close'
+import CloseIcon from '@mui/icons-material/Close';
 
 function Alerts () {
-    const [openError, setErrorOpen] = React.useState(true);
-    const [openWarn, setWarnOpen] = React.useState(true);
-    const [openSucess, setSucessOpen] = React.useState(true);
-
-    const temp = 80;
-
-    const alertCheck = event =>{
+    //useEffect for error alert for system
+    const [openError, setErrorOpen] = React.useState(false);
+    const temp = 100;
+    useEffect(() =>{
         if(temp > 98){
             setErrorOpen(true);
         }else{
             setErrorOpen(false);
         }
-    }
+    });
+
+    //demo alerts for low heart rate warning and succesful device connection 
+    const [openWarn, setWarnOpen] = React.useState(true);
+    const [openSucess, setSucessOpen] = React.useState(true);
+
+    
 
     return (
         /*
@@ -27,8 +30,7 @@ function Alerts () {
         */
         <Stack spacing={2}>
             <Collapse in={openError}>
-                <Alert severity="error"
-                    hidden = {event => alertCheck()}
+                {openError && <Alert severity="error"
                     action={
                         <IconButton
                             aria-label ="close"
@@ -44,7 +46,7 @@ function Alerts () {
                 >
                     <AlertTitle>Danger</AlertTitle>
                     Abnormal heart beat detected!
-                </Alert>
+                </Alert>}
             </Collapse>
 
             <Collapse in={openWarn}>
