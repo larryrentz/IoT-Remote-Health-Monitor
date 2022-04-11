@@ -1,15 +1,20 @@
 import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/compat/app';
-import { CardActions, Card, CardContent, Typography } from '@mui/material';
+import { CardActions, Card, CardContent, Typography, Box, IconButton, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Context from '../Context';
-import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import LineChart from './LineChart';
 
-export default function Device({device, deviceService, deviceCharacteristic, dbRef, deviceDisconnected}) {
+export default function Device({device, deviceService, deviceCharacteristic, dbRef}) {
     const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
-    const [isDisconnected, setIsDisconnected] = useState(deviceDisconnected);
+    const [isDisconnected, setIsDisconnected] = useState(false);
+    const [isClosed, setIsClosed] = useState(false);
     const [deviceName, setdeviceName] = useState(device.name);
     const [reading, setDeviceReading] = useState(0);
+
+    const [backgroundColor, setBackgroundColor] = useState('lightgreen');
     
     useEffect(() => {
         subscribeToUpdates();
@@ -18,9 +23,6 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     // Push reading to the cloud every 2 seconds
     useEffect(() => {
         setTimeout(() => {
-            // uncomment to log the heart rate and time in the console
-            // console.log(`${time.toLocaleTimeString()} - ${heartRate} BPM`);
-
             // push the heart rate if it exists
             if(device && !isDisconnected) {
                 dbRef.add({
@@ -29,6 +31,7 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
                 })
                 .then((docRef) => {
                   // can do something with the newly created document here
+                  console.log(`Firebase: ${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} - ${deviceName} - ${reading}`)
                 })
                 .catch((e) => {
                   console.error(`Error adding document: ${e}`);
@@ -39,13 +42,36 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
         }, 2000);
     }, [time]);
 
-    const onDisconnected = (event) => {
+    const onSelected = (event) => {
+        if(!context.devices[deviceName].isDisconnected && context.selectedDevice !== deviceName) {
+            console.log(`Device selected: ${deviceName}`);
+            let newContext = {...context};
+            newContext.selectedDevice = deviceName;
+            setContext(newContext);
+        }
+    }
+
+    const onClickDisconnect = (event) => {
         device.gatt.disconnect();
         setIsDisconnected(true);
-        deviceDisconnected = true;
-        setTimeout(()=>{
-            // alert(`Device: ${deviceName} is disconnected`);
-        }, 100);
+        setBackgroundColor('lightcoral');
+    }
+
+    const onDisconnected = (event) => {
+        let newContext = {...context};
+        newContext.devices[deviceName].isDisconnected = true;
+        if(context.selectedDevice === deviceName) {
+            console.log(`Disconnecting from selected device: ${context.selectedDevice}`);
+            newContext.selectedDevice = '';
+        }
+        setContext(newContext);
+        console.log(`Disconnected from ${deviceName}`);
+        console.log(newContext);
+    }
+
+    const onClosed = (event) => {
+        setIsClosed(true);
+        onDisconnected();
     }
 
     /**
@@ -59,12 +85,12 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
         /**
          * Changing the application level context
          */
-        const newContext = {...context};
-        newContext.devices[deviceName] = value;
+        let newContext = {...context};
+        newContext.devices[deviceName].reading = value;
         setContext(newContext);
 
         let now = new Date()
-        console.log(`> ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} - ${deviceName} - ${value}`);
+        console.log(`Local: ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()} - ${deviceName} - ${value}`);
     }
 
     /**
@@ -74,6 +100,14 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
     const subscribeToUpdates = async () => {
         try {
             device.addEventListener('gattserverdisconnected', onDisconnected);
+
+            // Set the device as connected
+            setIsDisconnected(false);
+            let newContext = {...context};
+            newContext.devices[deviceName].isDisconnected = false;
+            setContext(newContext);
+            
+            setBackgroundColor('lightgreen');
 
             // Set the device name
             setdeviceName(device.name);
@@ -100,45 +134,91 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
             setDeviceReading(reading.getUint8(1));
         }
         catch(error) {
-            console.log(`There was an error: ${error}`);
+            // console.log(`There was an error: ${error}`);
         }
     };
 
     return (
         <>
-            {!isDisconnected && <CardActions disableSpacing>
-                <Card sx={{ width: 250, padding: 10 }} class="card2">
-                    <CardContent>
-                        <Typography sx={{ fontSize: 20 }} color="black" gutterBottom>
-                            Device Information
-                        </Typography>
+            {!isClosed && 
+            <Accordion sx={{width: '98%', alignSelf: 'center', bgcolor: backgroundColor}}>
+                <AccordionSummary
+                    onClick={onSelected}
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
+                >
+                    <Box sx={{ minWidth: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <Typography sx={{ minWidth: '33%', flexShrink: 0 }}>Device Name: {deviceName}</Typography>
                         {!isDisconnected &&
-                            <Typography sx={{ mb: 1.5 }} color="black">
-                                Name: {deviceName}
-                            </Typography>
-                        }
-                        <Typography variant="body1" color="black">
-                            Device Data:
-                        </Typography>
-                        {!isDisconnected &&
-                            <Typography variant="body2" color="black">
+                            <Typography sx={{ color: 'text.secondary' }}>
                                 Measurement: {reading}
                             </Typography>
                         }
-                        
-                        {!isDisconnected &&
-                            <Button class="button"
-                            id="disButton"
-                            variant="contained"
-                            size="medium"
-                            onClick={onDisconnected}
+                        <IconButton onClick={onClosed}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
+                }}
+                >
+                    <CardActions disableSpacing
+                        sx={{minWidth: '40%'}}
+                    >
+                        <Card sx={{
+                            height: '100%',
+                            width: '100%',
+                            borderRadius: 4,
+                            bgcolor: backgroundColor,
+                        }}
+                        >
+                            <CardContent sx={{
+                                height: '80%',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between',
+                                padding: 3
+                            }}
                             >
-                            Disconnect Device
-                            </Button>
-                        }
-                    </CardContent>
-                </Card>
-            </CardActions>}
+                                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                    <Typography variant='h6'>Device Information</Typography>
+                                </Box>
+                                <Box>
+                                    <Typography>
+                                        Name: {deviceName}
+                                    </Typography>
+                                    <Typography variant="body1" color="black">
+                                        Device Data:
+                                    </Typography>
+                                    {!isDisconnected &&
+                                        <Typography variant="body2" color="black">
+                                            Measurement: {reading}
+                                        </Typography>
+                                    }
+                                </Box>
+                                <Box sx={{alignSelf: 'center'}}>
+                                    {!isDisconnected &&
+                                        <Button variant='contained' onClick={onClickDisconnect}>
+                                            Disconnect Device
+                                        </Button>
+                                    }
+                                    {isDisconnected &&
+                                        <Button variant='contained' color='error' onClick={subscribeToUpdates}>
+                                            Reconnect Device
+                                        </Button>
+                                    }
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </CardActions>
+                    <LineChart deviceName={deviceName}/>
+                </AccordionDetails>
+            </Accordion>
+            }
         </>
     )
 }

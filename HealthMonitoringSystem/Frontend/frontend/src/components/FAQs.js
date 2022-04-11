@@ -10,7 +10,7 @@ const style = {
     width: '60%',
     bgcolor: 'background.paper',
     boxShadow: 24,
-    borderRadius: 2,
+    borderRadius: 4,
     p: 4,
 };
 
