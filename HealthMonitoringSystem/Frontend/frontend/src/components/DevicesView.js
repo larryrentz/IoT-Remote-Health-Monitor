@@ -57,7 +57,7 @@ export default function DevicesView() {
             newContext.devices[device.name] = newDevice;
             newContext.selectedDevice = device.name;
             setContext(newContext);
-            
+
             console.log(`Device connected: ${device.name}`);
             console.log(newContext);
         }
@@ -67,11 +67,9 @@ export default function DevicesView() {
     };
 
     return (
-        <div>
-            <Box sx={{ display: 'flex', justifyContent: 'start', maxWidth: '100%', maxHeight: '100%', overflow: 'auto'}}>
-                {connectedDevices}
-            </Box>
+        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', maxWidth: '100%', maxHeight: '100%', overflow: 'scroll'}}>
+            {connectedDevices}
             <DeviceModal connectedDevice={connectToDevice}/>
-        </div>  
+        </Box> 
     );
 }

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import firebase from 'firebase/compat/app';
-import { CardActions, Card, CardContent, Typography, Box, IconButton, Button } from '@mui/material';
+import { CardActions, Card, CardContent, Typography, Box, IconButton, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Context from '../Context';
 import CloseIcon from '@mui/icons-material/Close';
+import LineChart from './LineChart';
 
 export default function Device({device, deviceService, deviceCharacteristic, dbRef}) {
     const {context, setContext} = useContext(Context);
@@ -138,54 +140,83 @@ export default function Device({device, deviceService, deviceCharacteristic, dbR
 
     return (
         <>
-            {!isClosed && <CardActions disableSpacing>
-                <Card sx={{
-                    bgcolor: backgroundColor,
-                    borderRadius: 4,
-                }}
-                onClick={onSelected}
+            {!isClosed && 
+            <Accordion sx={{width: '98%', alignSelf: 'center', bgcolor: backgroundColor}}>
+                <AccordionSummary
+                    onClick={onSelected}
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="panel1a-content"
+                    id="panel1a-header"
                 >
-                    <CardContent sx={{
-                        display: 'flex',
-                        flexDirection: 'column'
-                    }}
+                    <Box sx={{ minWidth: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <Typography sx={{ minWidth: '33%', flexShrink: 0 }}>Device Name: {deviceName}</Typography>
+                        {!isDisconnected &&
+                            <Typography sx={{ color: 'text.secondary' }}>
+                                Measurement: {reading}
+                            </Typography>
+                        }
+                        <IconButton onClick={onClosed}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-evenly',
+                }}
+                >
+                    <CardActions disableSpacing
+                        sx={{minWidth: '40%'}}
                     >
-                        <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: 2}}>
-                            <Typography sx={{ marginRight: 2}} variant='h6'>
-                                    Device Information
-                            </Typography>
-                            <IconButton onClick={onClosed}>
-                                <CloseIcon />
-                            </IconButton>
-                        </Box>
-                        <Box sx={{ marginBottom: 2 }}>
-                            <Typography>
-                                Name: {deviceName}
-                            </Typography>
-                            <Typography variant="body1" color="black">
-                                Device Data:
-                            </Typography>
-                            {!isDisconnected &&
-                                <Typography variant="body2" color="black">
-                                    Measurement: {reading}
-                                </Typography>
-                            }
-                        </Box>
-                        <Box sx={{ alignSelf: 'center'}}>
-                            {!isDisconnected &&
-                                <Button variant='contained' onClick={onClickDisconnect}>
-                                    Disconnect Device
-                                </Button>
-                            }
-                            {isDisconnected &&
-                                <Button variant='contained' color='error' onClick={subscribeToUpdates}>
-                                    Reconnect Device
-                                </Button>
-                            }
-                        </Box>
-                    </CardContent>
-                </Card>
-            </CardActions>}
+                        <Card sx={{
+                            height: '100%',
+                            width: '100%',
+                            borderRadius: 4,
+                            bgcolor: backgroundColor,
+                        }}
+                        >
+                            <CardContent sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'space-between'
+                            }}
+                            >
+                                <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 2}}>
+                                    <Typography variant='h6'>Device Information</Typography>
+                                </Box>
+                                <Box sx={{ marginBottom: 2 }}>
+                                    <Typography>
+                                        Name: {deviceName}
+                                    </Typography>
+                                    <Typography variant="body1" color="black">
+                                        Device Data:
+                                    </Typography>
+                                    {!isDisconnected &&
+                                        <Typography variant="body2" color="black">
+                                            Measurement: {reading}
+                                        </Typography>
+                                    }
+                                </Box>
+                                <Box sx={{alignSelf: 'center'}}>
+                                    {!isDisconnected &&
+                                        <Button variant='contained' onClick={onClickDisconnect}>
+                                            Disconnect Device
+                                        </Button>
+                                    }
+                                    {isDisconnected &&
+                                        <Button variant='contained' color='error' onClick={subscribeToUpdates}>
+                                            Reconnect Device
+                                        </Button>
+                                    }
+                                </Box>
+                            </CardContent>
+                        </Card>
+                    </CardActions>
+                    <LineChart deviceName={deviceName}/>
+                </AccordionDetails>
+            </Accordion>
+            }
         </>
     )
 }

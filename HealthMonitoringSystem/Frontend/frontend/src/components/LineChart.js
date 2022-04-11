@@ -1,41 +1,22 @@
-import { Card, Typography } from '@mui/material';
+import { Card, Typography, Box } from '@mui/material';
 import React, { useState, useEffect, useContext } from 'react'
 import Plot from 'react-plotly.js'
 import Context from '../Context';
 
-const LineChart = () => {
+const LineChart = ({deviceName}) => {
     const {context, setContext} = useContext(Context);
     const [time, setTime] = useState(new Date());
     const [data , setData] = useState([null]);
-    const [dbRef, setDbRef] = useState(null);
-    const [deviceName, setDeviceName] = useState();
-    const [device, setDevice] = useState();
-    // const device = context.devices['Polar H10 9C3FB127'];
-    useEffect(() => {
-        const selectedDevice = context.selectedDevice;
-        const newDevice = context.devices[selectedDevice];
-        if(newDevice && newDevice !== device) {
-            // console.log(`Old device ${device}`);
-            console.log(`New Selected Device: ${selectedDevice}`);
-            setDeviceName(selectedDevice);
-            setDevice(newDevice);
-            setDbRef(newDevice.dbRef);
-            FetchData();
-        }
-    }, [context.selectedDevice])
 
     //Fetch data every 2 seconds
     useEffect(() => {
         setTimeout(() => {
+            const device = context.devices[deviceName];
+
             if(device && !device.isDisconnected) {
-                console.log('Getting dbRef ...');
-                const newDbRef = device.dbRef;
-                if(newDbRef !== dbRef) {
-                    console.log('Getting new dbRef ...');
-                    setDbRef(newDbRef);
-                    setData([null]);
-                }
-                else if(dbRef) {
+                // console.log('Getting dbRef ...');
+                const dbRef = device.dbRef;
+                if(dbRef) {
                     FetchData();
                     // console.log('Fetching data ...');
                     // console.log(data);
@@ -49,6 +30,8 @@ const LineChart = () => {
 
     // Fetch the required data using the get() method
     const FetchData = async () => {
+        const device = context.devices[deviceName];
+        const dbRef = device.dbRef;
         const recentReadings = await dbRef.orderBy('createdAt', 'desc').limit(10).get()
         .then((querySnapshot) => {
             let dataPoints = [];
@@ -62,8 +45,8 @@ const LineChart = () => {
         });
     }
   return (
-    <div>
-        {data.length === 10 && !device.isDisconnected ? 
+    <Box sx={{minWidth: '50%', overflow: 'auto'}}>
+        {data.length === 10 && !context.devices[deviceName].isDisconnected ? 
         <>
             <Plot
                 data={[
@@ -78,7 +61,7 @@ const LineChart = () => {
                         marker: {color: 'red'},
                     }
                 ]}  
-                layout={ {width: 400, height: 400, title: 'Heart Rate',
+                layout={ {width: 500, height: 300, title: 'Heart Rate',
                         yaxis: {
                             title: {
                                 text: 'Heart Rate (bps)',
@@ -99,12 +82,10 @@ const LineChart = () => {
                     }
                 }
             />
-            <Typography variant="h6">Device: {deviceName}</Typography>
         </>
         :
         <Card sx={{
-            width: 400,
-            height: 400,
+            height: 300,
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center'
@@ -112,7 +93,7 @@ const LineChart = () => {
         >
             <h2>No Data</h2>
         </Card>}
-    </div>
+    </Box>
     
   )
 }

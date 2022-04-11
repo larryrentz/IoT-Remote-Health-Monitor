@@ -34,7 +34,7 @@ function Dashboard({user}) {
                     display: 'grid',
                     gridTemplateColumns: 'repeat(4, 1fr)',
                     gridTemplateRows: '10vh 80vh 10vh',
-                    gridTemplateAreas: `"header header header header" "main main analytics sidebar" "footer footer footer sidebar"`
+                    gridTemplateAreas: `"header header header header" "main main main sidebar" "footer footer footer sidebar"`
                 }}
                 >
                     <Box sx={{ gridArea: 'header', bgcolor: 'lightgreen'}}>
@@ -45,12 +45,12 @@ function Dashboard({user}) {
                     <Box sx={{ gridArea: 'main', bgcolor: 'lightyellow', padding: 2 }}>
                         <Patient /> 
                     </Box>
-                    <Box sx={{ gridArea: 'analytics', bgcolor: 'lightyellow'}}>
+                    {/* <Box sx={{ gridArea: 'analytics', bgcolor: 'lightyellow'}}>
                         <Box sx={{ marginBottom: 7}}>
                             <h1>Analytics</h1>
                         </Box>
                         <LineChart />
-                    </Box>
+                    </Box> */}
                     <Box
                     sx={{
                         gridArea: 'sidebar',
