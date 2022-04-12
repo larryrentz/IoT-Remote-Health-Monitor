@@ -1,13 +1,15 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Container, CardActions, Card, CardContent, Typography, Box } from '@mui/material';
 import Button from '@mui/material/Button';
 import './Patient.css';
 import LineChart from './LineChart';
 import DeviceModal from './DeviceModal.js';
 import DevicesView from './DevicesView.js';
+import Context from '../Context';
 
 
 function Patient() {
+  const {context, setContext} = useContext(Context);
   return (
     //patient information
     <Box sx={{overflow: 'auto', maxHeight: '100%'}}>
@@ -23,7 +25,7 @@ function Patient() {
                 Patient Information
               </Typography>
               <Typography sx={{ mb: 1.5 }} color="black">
-                Name: Jane Doe
+                Name: {context.user.displayName}
               </Typography>
               <Typography variant="body1" color="black">
                 DOB: 10/20/1975
